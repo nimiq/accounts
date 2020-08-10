@@ -18,7 +18,7 @@ import {
     RequestType,
     NimiqCheckoutRequest,
     MultiCurrencyCheckoutRequest,
-} from './PublicRequestTypes';
+} from '../../client/PublicRequestTypes';
 import {
     ParsedBasicRequest,
     ParsedCheckoutRequest,

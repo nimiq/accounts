@@ -132,7 +132,7 @@ import StatusScreen from '../components/StatusScreen.vue';
 import CashlinkSparkle from '../components/CashlinkSparkle.vue';
 import CircleSpinner from '../components/CircleSpinner.vue';
 import Cashlink from '../lib/Cashlink';
-import { CashlinkState, BasicRequest, CashlinkTheme } from '../lib/PublicRequestTypes';
+import { CashlinkState, BasicRequest, CashlinkTheme } from '../../client/PublicRequestTypes';
 import { AccountInfo } from '../lib/AccountInfo';
 import { Getter, Mutation } from 'vuex-class';
 import { NetworkClient, DetailedPlainTransaction } from '@nimiq/network-client';

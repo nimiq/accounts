@@ -96,7 +96,7 @@ import { State as RpcState } from '@nimiq/rpc';
 import { loadNimiq } from '../lib/Helpers';
 import { AccountInfo } from '../lib/AccountInfo';
 import { ParsedCreateCashlinkRequest } from '../lib/RequestTypes';
-import { RequestType } from '../lib/PublicRequestTypes';
+import { RequestType } from '../../client/PublicRequestTypes';
 import { NetworkClient } from '@nimiq/network-client';
 import { WalletStore } from '../lib/WalletStore';
 import { WalletInfo, WalletType } from '../lib/WalletInfo';

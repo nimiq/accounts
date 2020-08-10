@@ -1,5 +1,5 @@
 import { PostMessageRpcClient, RedirectRpcClient } from '@nimiq/rpc';
-import { ResultByRequestType, RequestType } from '../src/lib/PublicRequestTypes';
+import { ResultByRequestType, RequestType } from './PublicRequestTypes';
 
 export abstract class RequestBehavior<B extends BehaviorType> {
     public static getAllowedOrigin(endpoint: string) {

@@ -13,7 +13,7 @@ import { AccountInfo } from '../lib/AccountInfo';
 import { WalletInfo, WalletType } from '../lib/WalletInfo';
 import { State, Action } from 'vuex-class';
 import { WalletStore } from '@/lib/WalletStore';
-import { Account } from '../lib/PublicRequestTypes';
+import { Account } from '../../client/PublicRequestTypes';
 import StatusScreen from '@/components/StatusScreen.vue';
 import KeyguardClient from '@nimiq/keyguard-client';
 import LabelingMachine from '@/lib/LabelingMachine';

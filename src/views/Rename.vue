@@ -36,7 +36,7 @@
     import { ArrowLeftSmallIcon } from '@nimiq/vue-components';
     import Input from '@/components/Input.vue';
     import { ParsedRenameRequest } from '../lib/RequestTypes';
-    import { Account } from '../lib/PublicRequestTypes';
+    import { Account } from '../../client/PublicRequestTypes';
     import StatusScreen from '../components/StatusScreen.vue';
     import { WalletInfo, WalletType } from '../lib/WalletInfo';
     import { WalletStore } from '@/lib/WalletStore';

@@ -4,7 +4,7 @@ import { terser } from "rollup-plugin-terser";
 
 export default [
     {
-        input: 'build/client/HubApi.js',
+        input: 'build/HubApi.js',
         output: {
             file: 'dist/HubApi.umd.js',
             format: 'umd',
@@ -14,7 +14,7 @@ export default [
         external: [ '@nimiq/rpc' ]
     },
     {
-        input: 'build/client/HubApi.js',
+        input: 'build/HubApi.js',
         output: {
             file: 'dist/HubApi.es.js',
             format: 'es',
@@ -24,7 +24,7 @@ export default [
         external: [ '@nimiq/rpc' ]
     },
     {
-        input: 'build/client/HubApi.js',
+        input: 'build/HubApi.js',
         output: {
             file: 'dist/standalone/HubApi.standalone.umd.js',
             format: 'umd',
@@ -34,7 +34,7 @@ export default [
         plugins: [ resolve(), terser() ]
     },
     {
-        input: 'build/client/HubApi.js',
+        input: 'build/HubApi.js',
         output: {
             file: 'dist/standalone/HubApi.standalone.es.js',
             format: 'es',

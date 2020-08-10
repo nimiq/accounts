@@ -1,9 +1,9 @@
-import { Currency, PaymentType, RequestType } from './PublicRequestTypes';
+import { Currency, PaymentType, RequestType } from '../../client/PublicRequestTypes';
 import { ParsedPaymentOptions } from './paymentOptions/ParsedPaymentOptions';
 import { ParsedNimiqSpecifics, ParsedNimiqDirectPaymentOptions } from './paymentOptions/NimiqPaymentOptions';
 import { ParsedEtherSpecifics, ParsedEtherDirectPaymentOptions } from './paymentOptions/EtherPaymentOptions';
 import { ParsedBitcoinSpecifics, ParsedBitcoinDirectPaymentOptions } from './paymentOptions/BitcoinPaymentOptions';
-import { CashlinkTheme } from './PublicRequestTypes';
+import { CashlinkTheme } from '../../client/PublicRequestTypes';
 
 export interface ParsedBasicRequest {
     kind: RequestType;

@@ -20,7 +20,7 @@ import KeyguardClient from '@nimiq/keyguard-client';
 import { BrowserDetection } from '@nimiq/utils';
 import { SmallPage } from '@nimiq/vue-components';
 import { ParsedBasicRequest } from '../lib/RequestTypes';
-import { Account, RequestType } from '../lib/PublicRequestTypes';
+import { Account, RequestType } from '../../client/PublicRequestTypes';
 import { WalletInfo, WalletType } from '../lib/WalletInfo';
 import { WalletStore } from '../lib/WalletStore';
 import { Static } from '../lib/StaticStore';

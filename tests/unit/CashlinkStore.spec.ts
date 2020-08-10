@@ -2,7 +2,7 @@ import { setup } from './_setup';
 import { Store } from '@/lib/Store';
 import { CashlinkStore } from '@/lib/CashlinkStore';
 import Cashlink from '@/lib/Cashlink';
-import { CashlinkState } from '@/lib/PublicRequestTypes';
+import { CashlinkState } from '../../client/PublicRequestTypes';
 
 setup();
 

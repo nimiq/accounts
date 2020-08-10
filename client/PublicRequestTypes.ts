@@ -1,11 +1,11 @@
-import { WalletType } from './WalletInfo';
-
-type NimiqSpecifics = import('./paymentOptions/NimiqPaymentOptions').NimiqSpecifics;
-type NimiqDirectPaymentOptions = import('./paymentOptions/NimiqPaymentOptions').NimiqDirectPaymentOptions;
-type BitcoinSpecifics = import('./paymentOptions/BitcoinPaymentOptions').BitcoinSpecifics;
-type BitcoinDirectPaymentOptions = import('./paymentOptions/BitcoinPaymentOptions').BitcoinDirectPaymentOptions;
-type EtherSpecifics = import('./paymentOptions/EtherPaymentOptions').EtherSpecifics;
-type EtherDirectPaymentOptions = import('./paymentOptions/EtherPaymentOptions').EtherDirectPaymentOptions;
+import {
+    NimiqSpecifics,
+    NimiqDirectPaymentOptions,
+    BitcoinSpecifics,
+    BitcoinDirectPaymentOptions,
+    EtherSpecifics,
+    EtherDirectPaymentOptions,
+} from './PublicPaymentOptions';
 
 export enum RequestType {
     LIST = 'list',
@@ -236,7 +236,7 @@ export type Contract = VestingContract | HashedTimeLockedContract;
 export interface Account {
     accountId: string;
     label: string;
-    type: WalletType;
+    type: 1 | 2 | 3;
     fileExported: boolean;
     wordsExported: boolean;
     addresses: Address[];

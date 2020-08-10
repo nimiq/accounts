@@ -5,7 +5,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Network from '@/components/Network.vue';
-import { SignedTransaction } from '../lib/PublicRequestTypes';
+import { SignedTransaction } from '../../client/PublicRequestTypes';
 import { State } from 'vuex-class';
 import { Static } from '../lib/StaticStore';
 import KeyguardClient from '@nimiq/keyguard-client';

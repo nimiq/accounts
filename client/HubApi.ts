@@ -31,7 +31,7 @@ import {
     Currency,
     PaymentType,
     PaymentState,
-} from '../src/lib/PublicRequestTypes';
+} from './PublicRequestTypes';
 
 export default class HubApi<DB extends BehaviorType = BehaviorType.POPUP> { // DB: Default Behavior
     // Expose request behaviors and enums. Not exporting them via regular exports to avoid that users of the umd build

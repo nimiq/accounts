@@ -2,7 +2,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { SignedTransaction } from '../lib/PublicRequestTypes';
+import { SignedTransaction } from '../../client/PublicRequestTypes';
 import { NetworkClient, DetailedPlainTransaction } from '@nimiq/network-client';
 import Config from 'config';
 import { loadNimiq, setHistoryStorage, getHistoryStorage } from '../lib/Helpers';

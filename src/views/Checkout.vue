@@ -83,7 +83,7 @@ import { ParsedCheckoutRequest } from '../lib/RequestTypes';
 import BitcoinCheckoutCard from '../components/BitcoinCheckoutCard.vue';
 import EthereumCheckoutCard from '../components/EthereumCheckoutCard.vue';
 import NimiqCheckoutCard from '../components/NimiqCheckoutCard.vue';
-import { Currency as PublicCurrency } from '../lib/PublicRequestTypes';
+import { Currency as PublicCurrency } from '../../client/PublicRequestTypes';
 import { State as RpcState } from '@nimiq/rpc';
 import { Static } from '../lib/StaticStore';
 import { ERROR_CANCELED, HISTORY_KEY_SELECTED_CURRENCY } from '../lib/Constants';

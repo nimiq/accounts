@@ -20,7 +20,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { LoadingSpinner } from '@nimiq/vue-components';
 import CashlinkReceive from './views/CashlinkReceive.vue';
-import { CashlinkTheme } from './lib/PublicRequestTypes';
+import { CashlinkTheme } from '../client/PublicRequestTypes';
 import { loadNimiq } from './lib/Helpers';
 
 import '@nimiq/style/nimiq-style.min.css';

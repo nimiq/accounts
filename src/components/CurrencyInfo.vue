@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { FiatAmount } from '@nimiq/vue-components';
-import { Currency as PublicCurrency } from '../lib/PublicRequestTypes';
+import { Currency as PublicCurrency } from '../../client/PublicRequestTypes';
 
 @Component({components: {FiatAmount}})
 class CurrencyInfo extends Vue {
