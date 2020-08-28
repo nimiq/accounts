@@ -113,7 +113,7 @@ import KeyguardClient from '@nimiq/keyguard-client';
 import { ACCOUNT_DEFAULT_LABEL_LEGACY } from '@/lib/Constants';
 import { ContractInfo } from '@/lib/ContractInfo';
 import staticStore, { Static } from '@/lib/StaticStore';
-import { SimpleRequest, RequestType } from '@/lib/PublicRequestTypes';
+import { SimpleRequest, RequestType } from '../../client/PublicRequestTypes';
 import { State } from 'vuex-class';
 import { i18n } from '../i18n/i18n-setup';
 

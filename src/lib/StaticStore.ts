@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { createDecorator } from 'vue-class-component';
 import { ParsedRpcRequest } from './RequestTypes';
-import { RpcResult, RequestType } from './PublicRequestTypes';
+import { RpcResult, RequestType } from '../../client/PublicRequestTypes';
 import { State as RpcState } from '@nimiq/rpc';
 import { Request as KeyguardRequest } from '@nimiq/keyguard-client';
 import Cashlink from '../lib/Cashlink';

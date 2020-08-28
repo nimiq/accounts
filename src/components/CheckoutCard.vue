@@ -7,7 +7,7 @@ import StatusScreen from './StatusScreen.vue';
 import CheckoutServerApi, { GetStateResponse } from '../lib/CheckoutServerApi';
 import { PaymentInfoLine } from '@nimiq/vue-components';
 import { ERROR_REQUEST_TIMED_OUT, HISTORY_KEY_SELECTED_CURRENCY } from '../lib/Constants';
-import { PaymentState } from '../lib/PublicRequestTypes';
+import { PaymentState } from '../../client/PublicRequestTypes';
 
 export default class CheckoutCard<
     Parsed extends AvailableParsedPaymentOptions,

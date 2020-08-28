@@ -10,7 +10,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { SmallPage, CheckmarkIcon } from '@nimiq/vue-components';
 import { State } from 'vuex-class';
-import { RpcRequest, SimpleResult } from '../lib/PublicRequestTypes';
+import { RpcRequest, SimpleResult } from '../../client/PublicRequestTypes';
 import { SimpleResult as KSimpleResult } from '@nimiq/keyguard-client';
 import { Static } from '@/lib/StaticStore';
 import StatusScreen from '../components/StatusScreen.vue';

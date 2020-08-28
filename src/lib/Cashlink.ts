@@ -1,7 +1,7 @@
 import { Utf8Tools } from '@nimiq/utils';
 import { DetailedPlainTransaction, NetworkClient } from '@nimiq/network-client';
 import { loadNimiq } from './Helpers';
-import { CashlinkState, CashlinkTheme } from './PublicRequestTypes';
+import { CashlinkState, CashlinkTheme } from '../../client/PublicRequestTypes';
 
 export const CashlinkExtraData = {
     FUNDING:  new Uint8Array([0, 130, 128, 146, 135]), // 'CASH'.split('').map(c => c.charCodeAt(0) + 63)

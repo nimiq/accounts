@@ -43,7 +43,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { AccountRing, ArrowLeftSmallIcon, PageBody, PageHeader, SmallPage } from '@nimiq/vue-components';
 import { ParsedBasicRequest } from '../lib/RequestTypes';
-import { Account } from '../lib/PublicRequestTypes';
+import { Account } from '../../client/PublicRequestTypes';
 import { Static } from '../lib/StaticStore';
 import LedgerApi, {
     RequestType as LedgerApiRequestType,

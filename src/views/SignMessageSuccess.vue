@@ -10,7 +10,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { State } from 'vuex-class';
 import { ParsedSignMessageRequest } from '../lib/RequestTypes';
-import { SignedMessage } from '../lib/PublicRequestTypes';
+import { SignedMessage } from '../../client/PublicRequestTypes';
 import KeyguardClient from '@nimiq/keyguard-client';
 import { Static } from '@/lib/StaticStore';
 import StatusScreen from '../components/StatusScreen.vue';

@@ -14,7 +14,7 @@ import {
     CreateCashlinkRequest,
     CashlinkTheme,
     RequestType,
-} from '../src/lib/PublicRequestTypes';
+} from '../client/PublicRequestTypes';
 import { RedirectRequestBehavior } from '../client/RequestBehavior';
 import { Utf8Tools } from '@nimiq/utils';
 

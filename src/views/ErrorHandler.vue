@@ -10,7 +10,7 @@ import {
     ParsedSignMessageRequest,
     ParsedSignTransactionRequest,
 } from '../lib/RequestTypes';
-import { RequestType } from '../lib/PublicRequestTypes';
+import { RequestType } from '../../client/PublicRequestTypes';
 import { Errors } from '@nimiq/keyguard-client';
 import { WalletStore } from '../lib/WalletStore';
 import KeyguardClient from '@nimiq/keyguard-client';

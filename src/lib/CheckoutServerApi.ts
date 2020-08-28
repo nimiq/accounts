@@ -1,4 +1,4 @@
-import { Currency, PaymentType, PaymentOptionsForCurrencyAndType, PaymentState } from './PublicRequestTypes';
+import { Currency, PaymentType, PaymentOptionsForCurrencyAndType, PaymentState } from '../../client/PublicRequestTypes';
 import { isMilliseconds } from './Helpers';
 
 export interface GetStateResponse {

@@ -131,7 +131,7 @@ import {
     Amount,
     FiatAmount,
 } from '@nimiq/vue-components';
-import { PaymentState as PublicPaymentState } from '../lib/PublicRequestTypes';
+import { PaymentState as PublicPaymentState } from '../../client/PublicRequestTypes';
 import { AvailableParsedPaymentOptions } from '../lib/RequestTypes';
 import CheckoutCard from './CheckoutCard.vue';
 import CurrencyInfo from './CurrencyInfo.vue';

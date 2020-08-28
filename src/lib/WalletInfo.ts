@@ -4,7 +4,7 @@ import {
     ContractInfoEntry,
     ContractInfoHelper,
 } from './ContractInfo';
-import { Account } from './PublicRequestTypes';
+import { Account } from '../../client/PublicRequestTypes';
 import LabelingMachine from './LabelingMachine';
 
 export enum WalletType {

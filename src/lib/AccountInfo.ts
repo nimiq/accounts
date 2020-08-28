@@ -1,4 +1,4 @@
-import { Address } from './PublicRequestTypes';
+import { Address } from '../../client/PublicRequestTypes';
 import AddressUtils from './AddressUtils';
 import LabelingMachine from './LabelingMachine';
 

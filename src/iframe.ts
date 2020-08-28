@@ -4,7 +4,7 @@ import { WalletStore } from '@/lib/WalletStore';
 import { WalletInfoEntry, WalletInfo } from '@/lib/WalletInfo';
 import CookieJar from '@/lib/CookieJar';
 import Config from 'config';
-import { Account, Cashlink as PublicCashlink, RequestType } from './lib/PublicRequestTypes';
+import { Account, Cashlink as PublicCashlink, RequestType } from '../client/PublicRequestTypes';
 import Cashlink from './lib/Cashlink';
 import { CashlinkStore } from './lib/CashlinkStore';
 

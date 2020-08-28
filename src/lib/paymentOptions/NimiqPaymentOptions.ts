@@ -1,19 +1,8 @@
 import { TX_VALIDITY_WINDOW, TX_MIN_VALIDITY_DURATION } from '../Constants';
-import { Currency, PaymentType, PaymentOptions } from '../PublicRequestTypes';
+import { NimiqSpecifics, NimiqDirectPaymentOptions } from '../../../client/PublicPaymentOptions';
+import { Currency, PaymentType } from '../../../client/PublicRequestTypes';
 import { ParsedPaymentOptions } from './ParsedPaymentOptions';
 import { toNonScientificNumberString, Utf8Tools } from '@nimiq/utils';
-
-export interface NimiqSpecifics {
-    fee?: number | string;
-    feePerByte?: number | string;
-    extraData?: Uint8Array | string;
-    validityDuration?: number;
-    flags?: number;
-    sender?: string;
-    forceSender?: boolean;
-    recipient?: string;
-    recipientType?: Nimiq.Account.Type;
-}
 
 export type ParsedNimiqSpecifics = Omit<NimiqSpecifics, 'sender' | 'recipient' | 'fee' | 'feePerByte' | 'extraData'>
     & Required<Pick<NimiqSpecifics, 'forceSender' | 'flags' | 'validityDuration'>> & {
@@ -23,8 +12,6 @@ export type ParsedNimiqSpecifics = Omit<NimiqSpecifics, 'sender' | 'recipient' |
     feePerByte?: number,
     extraData?: Uint8Array,
 };
-
-export type NimiqDirectPaymentOptions = PaymentOptions<Currency.NIM, PaymentType.DIRECT>;
 
 export class ParsedNimiqDirectPaymentOptions extends ParsedPaymentOptions<Currency.NIM, PaymentType.DIRECT> {
     public amount: number;

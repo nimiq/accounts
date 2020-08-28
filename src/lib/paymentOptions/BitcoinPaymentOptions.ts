@@ -1,19 +1,12 @@
-import { Currency, PaymentType, PaymentOptions } from '../PublicRequestTypes';
+import { BitcoinSpecifics, BitcoinDirectPaymentOptions } from '../../../client/PublicPaymentOptions';
+import { Currency, PaymentType } from '../../../client/PublicRequestTypes';
 import { ParsedPaymentOptions } from './ParsedPaymentOptions';
 import { toNonScientificNumberString } from '@nimiq/utils';
-
-export interface BitcoinSpecifics {
-    fee?: number | string;
-    feePerByte?: number | string;
-    recipient?: string;
-}
 
 export type ParsedBitcoinSpecifics = Pick<BitcoinSpecifics, 'recipient'> & {
     fee?: number;
     feePerByte?: number;
 };
-
-export type BitcoinDirectPaymentOptions = PaymentOptions<Currency.BTC, PaymentType.DIRECT>;
 
 export class ParsedBitcoinDirectPaymentOptions extends ParsedPaymentOptions<Currency.BTC, PaymentType.DIRECT> {
     public amount: number;

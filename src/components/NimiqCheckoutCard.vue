@@ -103,7 +103,7 @@ import {
 import { AccountInfo } from '../lib/AccountInfo';
 import { TX_VALIDITY_WINDOW } from '../lib/Constants';
 import { ContractInfo, VestingContractInfo } from '../lib/ContractInfo';
-import { Account, Currency, PaymentState as PublicPaymentState, RequestType } from '../lib/PublicRequestTypes';
+import { Account, Currency, PaymentState as PublicPaymentState, RequestType } from '../../client/PublicRequestTypes';
 import staticStore from '../lib/StaticStore';
 import { WalletInfo, WalletType } from '../lib/WalletInfo';
 import { WalletStore } from '../lib/WalletStore';

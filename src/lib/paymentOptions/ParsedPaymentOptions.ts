@@ -5,7 +5,7 @@ import {
     Currency,
     PaymentType,
     PaymentOptionsForCurrencyAndType,
-} from '../PublicRequestTypes';
+} from '.../../client/PublicRequestTypes';
 import {
     ParsedPaymentOptionsForCurrencyAndType,
     ParsedProtocolSpecificsForCurrency,
