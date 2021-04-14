@@ -4,17 +4,22 @@ import { SmallPage } from '@nimiq/vue-components';
 import BitcoinSyncBaseView from './BitcoinSyncBaseView.vue';
 import StatusScreen from '../components/StatusScreen.vue';
 import GlobalClose from '../components/GlobalClose.vue';
+import { RequestType } from '../lib/PublicRequestTypes';
 import { ParsedSignBtcTransactionRequest } from '../lib/RequestTypes';
 import { Static } from '../lib/StaticStore';
 import { WalletInfo } from '../lib/WalletInfo';
 import { Getter } from 'vuex-class';
 
 // Import only types to avoid bundling of KeyguardClient in Ledger request if not required.
-// (But note that currently, the KeyguardClient is still always bundled in th RpcApi).
-type KeyguardSignBtcTransactionRequest = import('@nimiq/keyguard-client').SignBtcTransactionRequest;
-type BitcoinTransactionInput = import('@nimiq/keyguard-client').BitcoinTransactionInput;
-type BitcoinTransactionChangeOutput = Required<import('@nimiq/keyguard-client').BitcoinTransactionChangeOutput>;
-export type BitcoinTransactionInfo = Omit<import('@nimiq/keyguard-client').BitcoinTransactionInfo, 'changeOutput'> & {
+// (But note that currently, the KeyguardClient is still always bundled in the RpcApi).
+import type {
+    SignBtcTransactionRequest as KeyguardSignBtcTransactionRequest,
+    BitcoinTransactionInput,
+    BitcoinTransactionChangeOutput,
+    BitcoinTransactionInfo as KeyguardBitcoinTransactionInfo,
+} from '@nimiq/keyguard-client';
+
+export type BitcoinTransactionInfo = Omit<KeyguardBitcoinTransactionInfo, 'changeOutput'> & {
     changeOutput?: BitcoinTransactionChangeOutput,
 };
 
@@ -24,6 +29,20 @@ export default class SignBtcTransaction extends BitcoinSyncBaseView {
     @Getter private findWallet!: (id: string) => WalletInfo | undefined;
 
     protected async created() {
+        if (this.request.kind !== RequestType.SIGN_BTC_TRANSACTION) {
+            if (history.length >= 3) {
+                // First history entry is root, the second an original request handler invoking the transaction signing
+                // and the third is this one. If there was an original request handler calling us but the intermediate
+                // transaction signing request was lost on reload and instead the original request recovered from the
+                // RPC state, navigate back to the original request handler.
+                // TODO implementing a proper request call stack instead of the originalRouteName hack would avoid this
+                history.back();
+            } else {
+                this.$rpc.reject(new Error(`Unexpected request ${this.request.kind}`));
+            }
+            return;
+        }
+
         const walletInfo = this.findWallet(this.request.walletId)!;
 
         if (!walletInfo.btcXPub || !walletInfo.btcAddresses || !walletInfo.btcAddresses.external.length) {
@@ -39,18 +58,26 @@ export default class SignBtcTransaction extends BitcoinSyncBaseView {
             this.state = this.State.SYNCING;
 
             for (const input of this.request.inputs) {
-                const addressInfo = await walletInfo.findBtcAddressInfo(input.address);
-                if (!addressInfo) {
-                    this.$rpc.reject(new Error(`Input address not found: ${input.address}`));
-                    return;
+                let keyPath: string;
+                if (input.keyPath) {
+                    keyPath = input.keyPath;
+                } else {
+                    const addressInfo = await walletInfo.findBtcAddressInfo(input.address);
+                    if (!addressInfo) {
+                        this.$rpc.reject(new Error(`Input address not found: ${input.address}`));
+                        return;
+                    }
+                    keyPath = addressInfo.path;
                 }
 
                 inputs.push({
-                    keyPath: addressInfo.path,
+                    keyPath,
                     transactionHash: input.transactionHash,
                     outputIndex: input.outputIndex,
                     outputScript: input.outputScript,
+                    witnessScript: input.witnessScript,
                     value: input.value,
+                    sequence: input.sequence,
                 });
             }
 
@@ -79,6 +106,7 @@ export default class SignBtcTransaction extends BitcoinSyncBaseView {
             inputs,
             changeOutput,
             recipientOutput: this.request.output,
+            locktime: this.request.locktime,
         }, walletInfo);
     }
 

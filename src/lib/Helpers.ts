@@ -4,8 +4,8 @@ import {
     NETWORK_DEV,
     NETWORK_MAIN,
     ERROR_INVALID_NETWORK,
-} from '../lib/Constants';
-import { MOBILE_MAX_WIDTH } from './Constants';
+    MOBILE_MAX_WIDTH,
+} from './Constants';
 
 export function setHistoryStorage(key: string, data: any) {
     // Note that data can be anything that can be structurally cloned:

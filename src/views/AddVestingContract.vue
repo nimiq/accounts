@@ -168,8 +168,8 @@ export default class AddVestingContract extends Vue {
         setTimeout(() => this.done(), StatusScreen.SUCCESS_REDIRECT_DELAY);
     }
 
-    private done() {
-        const result = this.wallet!.toAccountType();
+    private async done() {
+        const result = await this.wallet!.toAccountType();
         this.$rpc.resolve(result);
     }
 }
@@ -246,4 +246,3 @@ export default class AddVestingContract extends Vue {
     white-space: nowrap;
 }
 </style>
-

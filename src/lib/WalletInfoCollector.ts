@@ -28,7 +28,7 @@ import {
     NESTED_SEGWIT,
     NATIVE_SEGWIT,
 } from './bitcoin/BitcoinConstants';
-import { getBtcNetwork, publicKeyToPayment } from './bitcoin/BitcoinUtils';
+import { deriveAddressesFromXPub, getBtcNetwork, publicKeyToPayment } from './bitcoin/BitcoinUtils';
 
 export type BasicAccountInfo = {
     address: string,
@@ -222,13 +222,28 @@ export default class WalletInfoCollector {
             ACCOUNT_MAX_ALLOWED_ADDRESS_GAP, walletType, keyId);
 
         try {
+            await loadBitcoinJS();
             // Start BTC address detection
-            const bitcoinAddressesPromise: Promise<{
+            const bitcoinAddresses: {
                 internal: BtcAddressInfo[],
                 external: BtcAddressInfo[],
-            }> = bitcoinXPub
-                ? this.detectBitcoinAddresses(bitcoinXPub)
-                : Promise.resolve({internal: [], external: []});
+            } = bitcoinXPub ? {
+                external: deriveAddressesFromXPub(
+                    bitcoinXPub,
+                    [EXTERNAL_INDEX],
+                    0,
+                    BTC_ACCOUNT_MAX_ALLOWED_ADDRESS_GAP,
+                ),
+                internal: deriveAddressesFromXPub(
+                    bitcoinXPub,
+                    [INTERNAL_INDEX],
+                    0,
+                    BTC_ACCOUNT_MAX_ALLOWED_ADDRESS_GAP,
+                ),
+            } : {
+                external: [],
+                internal: [],
+            };
 
             // Get or create the walletInfo instance and derive the first set of derived accounts
             const [walletInfo, firstSetOfDerivedAccounts] = await Promise.all([
@@ -330,7 +345,6 @@ export default class WalletInfoCollector {
 
             // Note that for Bitcoin we don't catch sync errors as receiptErrors which are only to be handled optionally
             // but throw instead as for Bitcoin it is important to complete a full sync to avoid address re-use.
-            const bitcoinAddresses = await bitcoinAddressesPromise;
             walletInfo.btcXPub = bitcoinXPub;
             walletInfo.btcAddresses = bitcoinAddresses;
             hasActivity = hasActivity || bitcoinAddresses.external.some((btcAddressInfo) => btcAddressInfo.used);

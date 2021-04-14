@@ -18,10 +18,15 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@nimiq/core-web@^1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.3.tgz#f0a4de59394f210f2c2d9cda8ee35c716847d40e"
-  integrity sha512-W66SS9n3ygYgD52r1GJr1WtYYOkcZsqdtMmDCEwDvkrmeARnHs2sAvj77Wt4PQG8JA7GwK5svIJr6rGccCaekw==
+"@nimiq/core-web@^1.5.8":
+  version "1.5.8"
+  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.8.tgz#da8abef84c6d293cbb9ca495a77f08daa08886b9"
+  integrity sha512-MNpFbGZetz2eZcHtJVa5tpmLjPf65mTcJBRQkOHS8kWE+f+Z++hdnwWUBQCEAph4oC6bsE5JSuU7VpwcogN7+w==
+
+"@nimiq/fastspot-api@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.5.2.tgz#be8bce7b3948e89d7ae7cb2ea2dc1745c7fe19ba"
+  integrity sha512-zlrNeGwHraus7mr5JYT5gH6vmCm4mdRYQI4CmYbs2g9aM6C4XDpLpH61rptgeYqrXX22IeOWB2NhdeyPtsPD6w==
 
 "@nimiq/rpc@^0.4.0":
   version "0.4.0"

@@ -3,73 +3,94 @@ import { Component } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { SmallPage } from '@nimiq/vue-components';
 import BitcoinSyncBaseView from './BitcoinSyncBaseView.vue';
-import KeyguardClient from '@nimiq/keyguard-client';
 import { BitcoinTransactionInputType } from '@nimiq/keyguard-client';
 import StatusScreen from '../components/StatusScreen.vue';
 import GlobalClose from '../components/GlobalClose.vue';
-import { ParsedRefundSwapRequest } from '../lib/RequestTypes';
+import { RequestType } from '../lib/PublicRequestTypes';
+import {
+    ParsedRefundSwapRequest,
+    ParsedSignTransactionRequest,
+    ParsedSignBtcTransactionRequest,
+} from '../lib/RequestTypes';
 import { Static } from '../lib/StaticStore';
 import { WalletInfo } from '../lib/WalletInfo';
 import { SwapAsset } from '@nimiq/fastspot-api';
 
+// Import only types to avoid bundling of KeyguardClient in Ledger request if not required.
+// (But note that currently, the KeyguardClient is still always bundled in the RpcApi).
+type KeyguardSignNimTransactionRequest = import('@nimiq/keyguard-client').SignTransactionRequest;
+type KeyguardSignBtcTransactionRequest = import('@nimiq/keyguard-client').SignBtcTransactionRequest;
+
 @Component({components: {StatusScreen, SmallPage, GlobalClose}}) // including components used in parent class
 export default class RefundSwap extends BitcoinSyncBaseView {
-    @Static private request!: ParsedRefundSwapRequest;
+    // Can be ParsedSignTransactionRequest or ParsedSignBtcTransactionRequest in RefundSwapLedger after returning from
+    // signing via a ParsedSignTransactionRequest or ParsedSignBtcTransactionRequest.
+    @Static protected request!: ParsedRefundSwapRequest | ParsedSignTransactionRequest
+        | ParsedSignBtcTransactionRequest;
     @Getter private findWallet!: (id: string) => WalletInfo | undefined;
 
-    public async created() {
-        // Forward user through Hub to Keyguard
+    protected async created() {
+        if (this.request.kind !== RequestType.REFUND_SWAP) {
+            // can happen for RefundSwapLedger and is handled there
+            return;
+        }
 
-        const account = this.findWallet(this.request.walletId)!;
+        const request = this.request as ParsedRefundSwapRequest;
 
-        if (this.request.refund.type === SwapAsset.NIM) {
-            const address = this.request.refund.recipient.toUserFriendlyAddress();
-            const signer = account.findSignerForAddress(this.request.refund.recipient)!;
+        const refundInfo = request.refund;
+        const account = this.findWallet(request.walletId)!; // existence checked in RpcApi
 
-            const request: KeyguardClient.SignTransactionRequest = {
-                appName: this.request.appName,
+        if (refundInfo.type === SwapAsset.NIM) {
+            const { sender, recipient, value, fee, extraData: data, validityStartHeight } = refundInfo;
+            const signer = account.findSignerForAddress(recipient);
+
+            if (!signer) {
+                this.$rpc.reject(new Error(`Unknown recipient ${refundInfo.recipient}`));
+                return;
+            }
+
+            const signRequest: KeyguardSignNimTransactionRequest = {
+                appName: request.appName,
 
                 keyId: account.keyId,
                 keyLabel: account.labelForKeyguard,
 
                 keyPath: signer.path,
-                sender: this.request.refund.sender.serialize(), // HTLC address
+                sender: sender.serialize(), // HTLC address
                 senderType: Nimiq.Account.Type.HTLC,
-                senderLabel: 'HTLC',
-                recipient: signer.address.serialize(), // My address, must be refund address of HTLC
+                senderLabel: 'Swap HTLC',
+                // My address, must be refund address of HTLC. Send to signer as recipient might be a contract.
+                recipient: signer.address.serialize(),
                 recipientLabel: signer.label,
-                value: this.request.refund.value, // Luna
-                fee: this.request.refund.fee, // Luna
-                data: this.request.refund.extraData,
-                validityStartHeight: this.request.refund.validityStartHeight,
+                value, // Luna
+                fee, // Luna
+                data,
+                validityStartHeight,
             };
 
-            const client = this.$rpc.createKeyguardClient(true);
-            client.signTransaction(request);
+            this._signTransaction(signRequest);
         }
 
-        if (this.request.refund.type === SwapAsset.BTC) {
-            let inputKeyPath: string;
+        if (refundInfo.type === SwapAsset.BTC) {
+            let signerKeyPath: string;
             try {
                 // Note that the sync state will only be visible in UI if the sync is not instant (if we actually sync)
                 this.state = this.State.SYNCING;
 
                 let didDeriveAddresses = false;
-                let addressInfo = account.findBtcAddressInfo(this.request.refund.refundAddress);
+                let addressInfo = account.findBtcAddressInfo(refundInfo.refundAddress);
                 if (addressInfo instanceof Promise) {
                     didDeriveAddresses = true;
                     addressInfo = await addressInfo;
                 }
                 if (!addressInfo) {
-                    this.$rpc.reject(new Error(`Refund address not found: ${this.request.refund.refundAddress}`));
+                    this.$rpc.reject(new Error(`Refund address not found: ${refundInfo.refundAddress}`));
                     return;
                 }
-                inputKeyPath = addressInfo.path;
+                signerKeyPath = addressInfo.path;
 
-                const outputAddressInfo = await account.findBtcAddressInfo(this.request.refund.output.address,
-                    !didDeriveAddresses);
-                if (!outputAddressInfo) {
-                    this.$rpc.reject(new Error(`Output address not found: ${this.request.refund.output.address}`));
+                if (!await account.findBtcAddressInfo(refundInfo.output.address, !didDeriveAddresses)) {
+                    this.$rpc.reject(new Error(`Output address not found: ${refundInfo.output.address}`));
                     return;
                 }
 
@@ -80,24 +101,35 @@ export default class RefundSwap extends BitcoinSyncBaseView {
                 return;
             }
 
-            const request: KeyguardClient.SignBtcTransactionRequest = {
-                appName: this.request.appName,
+            const signRequest: KeyguardSignBtcTransactionRequest = {
+                appName: request.appName,
 
                 keyId: account.keyId,
                 keyLabel: account.labelForKeyguard,
 
                 inputs: [{
-                    ...this.request.refund.input,
-                    keyPath: inputKeyPath,
+                    ...refundInfo.input,
+                    keyPath: signerKeyPath,
                     type: BitcoinTransactionInputType.HTLC_REFUND,
                 }],
                 recipientOutput: {
-                    ...this.request.refund.output,
+                    ...refundInfo.output,
                     label: account.label,
                 },
             };
 
-            const client = this.$rpc.createKeyguardClient(true);
+            this._signTransaction(signRequest);
+        }
+    }
+
+    protected _signTransaction(request: KeyguardSignNimTransactionRequest | KeyguardSignBtcTransactionRequest) {
+        // Note that this method gets overwritten in RefundSwapLedger
+        const client = this.$rpc.createKeyguardClient(true);
+        if ('sender' in request) {
+            // Nimiq request
+            client.signTransaction(request);
+        } else {
+            // Bitcoin request
             client.signBtcTransaction(request);
         }
     }

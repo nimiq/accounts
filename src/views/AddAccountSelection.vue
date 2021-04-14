@@ -21,6 +21,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { SmallPage, PageHeader, CheckmarkIcon } from '@nimiq/vue-components';
+import StatusScreen from '../components/StatusScreen.vue';
+import GlobalClose from '../components/GlobalClose.vue';
 import IdenticonSelector from '../components/IdenticonSelector.vue';
 import { AccountInfo } from '../lib/AccountInfo';
 import { State } from 'vuex-class';
@@ -28,8 +30,6 @@ import { WalletStore } from '../lib/WalletStore';
 import { DerivedAddress } from '@nimiq/keyguard-client';
 import { ParsedSimpleRequest } from '../lib/RequestTypes';
 import { Address } from '../lib/PublicRequestTypes';
-import StatusScreen from '../components/StatusScreen.vue';
-import GlobalClose from '../components/GlobalClose.vue';
 import { Static } from '../lib/StaticStore';
 
 @Component({components: {SmallPage, PageHeader, StatusScreen, GlobalClose, IdenticonSelector, CheckmarkIcon}})

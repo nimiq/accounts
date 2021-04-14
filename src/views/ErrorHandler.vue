@@ -109,14 +109,17 @@ export default class ErrorHandler extends Vue {
             // The walletId is already in the Hub request
             return WalletStore.Instance.get((this.request as ParsedSimpleRequest).walletId);
         } else if ((this.request as ParsedSignTransactionRequest).sender
-                || (this.request as ParsedSignMessageRequest).signer) {
+            || (this.request as ParsedSignMessageRequest).signer) {
             // Hub request was SignTransaction/Checkout/SignMessage.
             // The wallet can be found by the (optional) sender/signer address in the Hub request
-            const address = (this.request as ParsedSignTransactionRequest).sender
-                            || (this.request as ParsedSignMessageRequest).signer;
+            const messageSigner = (this.request as ParsedSignMessageRequest).signer;
+            const transactionSender = (this.request as ParsedSignTransactionRequest).sender;
+            const address = messageSigner || (transactionSender instanceof Nimiq.Address
+                ? transactionSender
+                : transactionSender.address);
             return this.findWalletByAddress(address.toUserFriendlyAddress(), true);
         } else if (this.request.kind === RequestType.CHECKOUT
-                || this.request.kind === RequestType.SIGN_MESSAGE) {
+            || this.request.kind === RequestType.SIGN_MESSAGE) {
             // The keyId of the selected address is in the keyguardRequest
             return this.findWalletByKeyId((this.keyguardRequest as KeyguardClient.SignMessageRequest).keyId);
         } else {

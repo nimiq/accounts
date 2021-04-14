@@ -168,7 +168,18 @@ class Demo {
             try {
                 const result = await demo.client.chooseAddress({ appName: 'Hub Demos' }, demo._defaultBehavior);
                 console.log('Result', result);
-                document.querySelector('#result').textContent = 'Address was chosen';
+                document.querySelector('#result').textContent = `Address was chosen: ${result ? result.address : '-'}`;
+            } catch (e) {
+                console.error(e);
+                document.querySelector('#result').textContent = `Error: ${e.message || e}`;
+            }
+        });
+
+        document.querySelector('button#choose-address-and-btc').addEventListener('click', async () => {
+            try {
+                const result = await demo.client.chooseAddress({ appName: 'Hub Demos', returnBtcAddress: true }, demo._defaultBehavior);
+                console.log('Result', result);
+                document.querySelector('#result').textContent = `Address was chosen: ${result ? result.address : '-'}`;
             } catch (e) {
                 console.error(e);
                 document.querySelector('#result').textContent = `Error: ${e.message || e}`;

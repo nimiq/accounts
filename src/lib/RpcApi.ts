@@ -4,11 +4,11 @@ import { RootState } from '@/store';
 import { Store } from 'vuex';
 import Router, { Route } from 'vue-router';
 import {
+    ParsedRpcRequest,
+    ParsedSimpleRequest,
     ParsedCheckoutRequest,
     ParsedSignMessageRequest,
     ParsedSignTransactionRequest,
-    ParsedSimpleRequest,
-    ParsedSetupSwapRequest,
 } from './RequestTypes';
 import { RequestParser } from './RequestParser';
 import { Currency, RequestType, RpcRequest, RpcResult } from './PublicRequestTypes';
@@ -49,7 +49,6 @@ export default class RpcApi {
         RequestType.CHOOSE_ADDRESS,
         RequestType.CREATE_CASHLINK,
         RequestType.MANAGE_CASHLINK,
-        // RequestType.SIGN_BTC_TRANSACTION,
     ];
 
     constructor(store: Store<RootState>, staticStore: StaticStore, router: Router) {
@@ -248,7 +247,7 @@ export default class RpcApi {
     }
 
     private async _hubApiHandler(requestType: RequestType, state: RpcState, arg: RpcRequest) {
-        let request;
+        let request: ParsedRpcRequest | undefined;
 
         if ( // Check that a non-whitelisted request comes from a privileged origin
             !this._3rdPartyRequestWhitelist.includes(requestType)
@@ -295,7 +294,10 @@ export default class RpcApi {
                 errorMsg = 'AccountId not found';
             } else if (requestType === RequestType.SIGN_TRANSACTION) {
                 accountRequired = true;
-                const address = (request as ParsedSignTransactionRequest).sender;
+                const parsedSignTransactionRequest = request as ParsedSignTransactionRequest;
+                const address = parsedSignTransactionRequest.sender instanceof Nimiq.Address
+                    ? parsedSignTransactionRequest.sender
+                    : parsedSignTransactionRequest.sender.address;
                 account = this._store.getters.findWalletByAddress(address.toUserFriendlyAddress(), true);
             } else if (requestType === RequestType.SIGN_MESSAGE) {
                 accountRequired = false; // Sign message allows user to select an account
@@ -323,13 +325,6 @@ export default class RpcApi {
                             true,
                         );
                     }
-                }
-            } else if (requestType === RequestType.SETUP_SWAP) {
-                accountRequired = true;
-                const { fund, redeem } = (request as ParsedSetupSwapRequest);
-                const address = fund.type === 'NIM' ? fund.sender : redeem.type === 'NIM' ? redeem.recipient : null;
-                if (address) {
-                    account = this._store.getters.findWalletByAddress(address.toUserFriendlyAddress(), true);
                 }
             }
             if (accountRequired && !account) {

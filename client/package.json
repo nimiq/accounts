@@ -1,6 +1,6 @@
 {
   "name": "@nimiq/hub-api",
-  "version": "1.3.1",
+  "version": "1.4.2-beta.3",
   "main": "dist/HubApi.umd.js",
   "module": "dist/HubApi.es.js",
   "repository": "https://github.com/nimiq/hub/tree/master/client",
@@ -9,7 +9,8 @@
   "private": false,
   "types": "types/index.d.ts",
   "dependencies": {
-    "@nimiq/core-web": "^1.5.3",
+    "@nimiq/core-web": "^1.5.8",
+    "@nimiq/fastspot-api": "^1.5.2",
     "@nimiq/rpc": "^0.4.0",
     "big-integer": "^1.6.48"
   },

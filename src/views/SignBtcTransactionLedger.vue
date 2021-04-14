@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div v-if="request.kind === 'sign-btc-transaction'" class="container">
         <SmallPage>
             <PageHeader>{{ $t('Confirm Transaction') }}</PageHeader>
 
@@ -64,17 +64,12 @@ import LedgerApi, {
     TransactionInfoBitcoin as LedgerBitcoinTransactionInfo,
     RequestTypeBitcoin as LedgerApiRequestType,
 } from '@nimiq/ledger-api';
-import Config from 'config';
+import { RequestType } from '../lib/PublicRequestTypes';
 import { SignedBtcTransaction } from '../lib/PublicRequestTypes';
 import { ERROR_CANCELED } from '../lib/Constants';
-import { BTC_NETWORK_TEST } from '../lib/bitcoin/BitcoinConstants';
 import { WalletInfo } from '../lib/WalletInfo';
 import { loadBitcoinJS } from '../lib/bitcoin/BitcoinJSLoader';
-import { getElectrumClient } from '../lib/bitcoin/ElectrumClient';
-
-// Import only types to avoid bundling of lazy-loaded BitcoinJS.
-type BitcoinTransactionInput = import('@nimiq/keyguard-client').BitcoinTransactionInput;
-type BitcoinJsTransaction = import('bitcoinjs-lib').Transaction;
+import { prepareBitcoinTransactionForLedgerSigning } from '../lib/bitcoin/BitcoinLedgerUtils';
 
 @Component({components: {StatusScreen, SmallPage, PageHeader, Amount, GlobalClose, LedgerUi, LabelAvatar}})
 export default class SignBtcTransactionLedger extends SignBtcTransaction {
@@ -92,6 +87,9 @@ export default class SignBtcTransactionLedger extends SignBtcTransaction {
     private _isDestroyed: boolean = false;
 
     protected async created() {
+        if (this.request.kind !== RequestType.SIGN_BTC_TRANSACTION) return; // see parent class
+        // preload BitcoinJS
+        loadBitcoinJS();
         // Note that vue-class-component transforms the inheritance into a merge of vue mixins where each class retains
         // its lifecycle hooks, therefore we don't need to call super.created() here.
         const { inputs, output, changeOutput } = this.request;
@@ -122,49 +120,17 @@ export default class SignBtcTransactionLedger extends SignBtcTransaction {
     }
 
     protected async _signBtcTransaction(transactionInfo: BitcoinTransactionInfo, walletInfo: WalletInfo) {
-        const bitcoinJsPromise = loadBitcoinJS();
+        // If user left this view in the mean time, don't continue signing the transaction
+        if (this._isDestroyed) return;
 
-        // Fetch whole input transactions for computation of Ledger's trusted inputs
-        let inputTransactions: BitcoinJsTransaction[];
+        let ledgerTransactionInfo: LedgerBitcoinTransactionInfo;
         try {
             this.state = this.State.SYNCING;
-            inputTransactions = await Promise.all(
-                transactionInfo.inputs.map((input) => this._getInputTransaction(input)),
-            );
+            ledgerTransactionInfo = await prepareBitcoinTransactionForLedgerSigning(transactionInfo);
         } catch (e) {
             this.state = this.State.SYNCING_FAILED;
             this.error = e.message || e;
             return;
-        }
-
-        const inputs: LedgerBitcoinTransactionInfo['inputs'] = transactionInfo.inputs.map((input, i) => ({
-            transaction: inputTransactions[i],
-            index: input.outputIndex,
-            keyPath: input.keyPath.replace(/m\//, ''),
-        }));
-
-        // Prepare outputs and pre-calculate output scripts
-        await bitcoinJsPromise;
-        const network = Config.bitcoinNetwork === BTC_NETWORK_TEST
-            ? BitcoinJS.networks.testnet
-            : BitcoinJS.networks.bitcoin;
-        const outputs: LedgerBitcoinTransactionInfo['outputs']  = [{
-            amount: transactionInfo.recipientOutput.value,
-            outputScript: BitcoinJS.address.toOutputScript(
-                transactionInfo.recipientOutput.address,
-                network,
-            ).toString('hex'),
-        }];
-        let changePath: string | undefined;
-        if (transactionInfo.changeOutput) {
-            changePath = transactionInfo.changeOutput.keyPath.replace(/^m\//, '');
-            outputs.push({
-                amount: transactionInfo.changeOutput.value,
-                outputScript: BitcoinJS.address.toOutputScript(
-                    transactionInfo.changeOutput.address,
-                    network,
-                ).toString('hex'),
-            });
         }
 
         // If user left this view in the mean time, don't continue signing the transaction
@@ -176,7 +142,7 @@ export default class SignBtcTransactionLedger extends SignBtcTransaction {
 
         let signedTransactionHex: string;
         try {
-            signedTransactionHex = await LedgerApi.Bitcoin.signTransaction({ inputs, outputs, changePath });
+            signedTransactionHex = await LedgerApi.Bitcoin.signTransaction(ledgerTransactionInfo);
         } catch (e) {
             if (this._isDestroyed) return; // user is not on this view anymore
             // If cancelled, handle the exception. Otherwise just keep the ledger ui / error message displayed.
@@ -189,6 +155,7 @@ export default class SignBtcTransactionLedger extends SignBtcTransaction {
         // If user left this view in the mean time, don't resolve
         if (this._isDestroyed) return;
 
+        await loadBitcoinJS();
         const signedTransaction = BitcoinJS.Transaction.fromHex(signedTransactionHex);
 
         const result: SignedBtcTransaction = {
@@ -199,51 +166,6 @@ export default class SignBtcTransactionLedger extends SignBtcTransaction {
         this.state = this.State.FINISHED;
         await new Promise((resolve) => setTimeout(resolve, StatusScreen.SUCCESS_REDIRECT_DELAY));
         this.$rpc.resolve(result);
-    }
-
-    private async _getInputTransaction(input: BitcoinTransactionInput): Promise<BitcoinJsTransaction> {
-        const [electrum] = await Promise.all([
-            getElectrumClient(),
-            loadBitcoinJS(),
-        ]);
-        // note that buffer is marked as external module in vue.config.js and internally, the buffer bundled with
-        // BitcoinJS is used, therefore we retrieve it after having BitcoinJS loaded.
-        // TODO change this when we don't prebuild BitcoinJS anymore
-        const Buffer = await import('buffer').then((module) => module.Buffer);
-
-        const fetchedInput = await electrum.getTransaction(input.transactionHash);
-
-        const inputTransaction = new BitcoinJS.Transaction();
-        inputTransaction.version = fetchedInput.version;
-        inputTransaction.locktime = fetchedInput.locktime;
-
-        // note: index is the index of the input among the other inputs of this transaction, not the index among the
-        // other outputs of the previous transaction
-        const inputInputs = fetchedInput.inputs.sort((a, b) => a.index - b.index);
-        for (const { transactionHash: hashHex, outputIndex, script: scriptHex, sequence, witness } of inputInputs) {
-            // transaction hash string representation is reversed, see BitcoinJS.Transaction.getId
-            const hash = Buffer.from(hashHex, 'hex').reverse();
-            const script = Buffer.from(scriptHex, 'hex');
-            const index = inputTransaction.addInput(hash, outputIndex, sequence, script);
-
-            inputTransaction.setWitness(index, witness.map((w) => {
-                if (typeof w === 'number') {
-                    // TODO this case can actually not happen, the type in the electrum-api is wrong
-                    const buffer = Buffer.alloc(1);
-                    buffer[0] = w;
-                    return buffer;
-                }
-                return Buffer.from(w, 'hex');
-            }));
-        }
-
-        const inputOutputs = fetchedInput.outputs.sort((a, b) => a.index - b.index);
-        for (const { value, script: scriptHex } of inputOutputs) {
-            const script = Buffer.from(scriptHex, 'hex');
-            inputTransaction.addOutput(script, value);
-        }
-
-        return inputTransaction;
     }
 }
 </script>

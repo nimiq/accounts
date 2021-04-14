@@ -1,4 +1,4 @@
-type BigInteger = import('big-integer').BigInteger; // imports only the type without bundling
+import type { BigInteger } from 'big-integer'; // imports only the type without bundling
 import { FormattableNumber, toNonScientificNumberString } from '@nimiq/utils';
 import { isMilliseconds } from '../Helpers';
 import {

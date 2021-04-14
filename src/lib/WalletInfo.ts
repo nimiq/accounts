@@ -10,6 +10,8 @@ import { labelKeyguardAccount } from './LabelingMachine';
 import WalletInfoCollector from './WalletInfoCollector';
 import { WalletStore } from '../lib/WalletStore';
 import { WalletType } from './Constants';
+import { makeUid } from './Uid';
+import AddressUtils from './AddressUtils';
 
 export class WalletInfo {
     public static fromObject(o: WalletInfoEntry): WalletInfo {
@@ -33,9 +35,11 @@ export class WalletInfo {
             o.keyMissing, o.fileExported, o.wordsExported, o.btcXPub, btcAddresses);
     }
 
-    public static objectToAccountType(o: WalletInfoEntry): Account {
+    public static async objectToAccountType(o: WalletInfoEntry): Promise<Account> {
         // Polyfill BTC address lists for pre-BTC wallets
         if (!o.btcAddresses) o.btcAddresses = { internal: [], external: [] };
+
+        const accountInfoEntries = Array.from(o.accounts.values());
 
         return {
             accountId: o.id,
@@ -43,14 +47,19 @@ export class WalletInfo {
             type: o.type,
             fileExported: o.fileExported,
             wordsExported: o.wordsExported,
-            addresses: Array.from(o.accounts.values()).map((address) => AccountInfo.objectToAddressType(address)),
+            addresses: accountInfoEntries.map((entry) => AccountInfo.objectToAddressType(entry)),
             contracts: o.contracts.map((contract) => ContractInfoHelper.objectToContractType(contract)),
             btcAddresses: {
                 internal: o.btcAddresses.internal.map((entry) => BtcAddressInfo.objectToBtcAddressType(entry)),
                 external: o.btcAddresses.external.map((entry) => BtcAddressInfo.objectToBtcAddressType(entry)),
             },
+            uid: o.keyId
+                ? await makeUid(o.keyId, AddressUtils.toUserFriendlyAddress(accountInfoEntries[0].address))
+                : '',
         };
     }
+
+    private _uid: string | undefined;
 
     public constructor(
         public id: string,
@@ -188,7 +197,7 @@ export class WalletInfo {
         };
     }
 
-    public toAccountType(): Account {
+    public async toAccountType(): Promise<Account> {
         return {
             accountId: this.id,
             label: this.label,
@@ -201,7 +210,13 @@ export class WalletInfo {
                 internal: this.btcAddresses.internal.map((btcAddressInfo) => btcAddressInfo.toBtcAddressType()),
                 external: this.btcAddresses.external.map((btcAddressInfo) => btcAddressInfo.toBtcAddressType()),
             },
+            uid: await this.getUid(),
         };
+    }
+
+    public async getUid(): Promise<string> {
+        return this._uid
+            || (this._uid = await makeUid(this.keyId, Array.from(this.accounts.values())[0].userFriendlyAddress));
     }
 }
 

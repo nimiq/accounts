@@ -125,8 +125,8 @@
             setTimeout(() => this.done(), StatusScreen.SUCCESS_REDIRECT_DELAY);
         }
 
-        private done() {
-            const result: Account = this.wallet!.toAccountType();
+        private async done() {
+            const result: Account = await this.wallet!.toAccountType();
             this.$rpc.resolve(result);
         }
     }
@@ -189,4 +189,3 @@
         white-space: nowrap;
     }
 </style>
-

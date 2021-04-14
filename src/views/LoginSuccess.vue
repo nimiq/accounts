@@ -171,7 +171,7 @@ export default class LoginSuccess extends Vue {
             this.$addWalletAndSetActive(walletInfo);
         }
 
-        const result: Account[] = this.walletInfos.map((walletInfo) => walletInfo.toAccountType());
+        const result: Account[] = await Promise.all(this.walletInfos.map((walletInfo) => walletInfo.toAccountType()));
 
         if (this.receiptsError) {
             this.title = this.$t('Your Addresses may be\nincomplete.') as string;

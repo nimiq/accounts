@@ -6,7 +6,7 @@ import { Cookie } from '@nimiq/utils';
 Vue.use(VueI18n);
 
 const DEFAULT_LANGUAGE = 'en';
-const SUPPORTED_LANGUAGES = [DEFAULT_LANGUAGE, 'de', 'es', 'fr', 'ru', 'uk', 'zh'];
+const SUPPORTED_LANGUAGES = [DEFAULT_LANGUAGE, 'de', 'es', 'fr', 'nl', 'ru', 'uk', 'zh'];
 const LOADED_LANGUAGES: string[] = [];
 
 export const i18n = new VueI18n({
@@ -32,6 +32,7 @@ export async function setLanguage(lang: string) {
     const messages = await import(/* webpackChunkName: "lang-[request]" */ `@/i18n/${lang}.po`);
     i18n.setLocaleMessage(lang, messages.default || {});
     LOADED_LANGUAGES.push(lang);
+    document.documentElement.setAttribute('lang', lang);
     i18n.locale = lang;
     return lang;
 }

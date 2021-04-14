@@ -87,7 +87,7 @@ export default class SignupSuccess extends Vue {
         this.title = this.$t('Welcome to the\nNimiq Blockchain.') as string;
         this.state = StatusScreen.State.SUCCESS;
 
-        const result: Account[] = [walletInfo.toAccountType()];
+        const result: Account[] = [await walletInfo.toAccountType()];
         setTimeout(() => this.$rpc.resolve(result), StatusScreen.SUCCESS_REDIRECT_DELAY);
     }
 }

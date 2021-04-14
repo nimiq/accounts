@@ -1,12 +1,12 @@
 # 
 # Translators:
 # Daniel, 2020
-# Sven <sven@nimiq.com>, 2020
+# Sven <sven@nimiq.com>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sven <sven@nimiq.com>, 2020\n"
-"Language-Team: Chinese (https://www.transifex.com/nimiq-foundation/teams/107400/zh/)\n"
+"Last-Translator: Sven <sven@nimiq.com>, 2021\n"
+"Language-Team: Chinese (https://www.transifex.com/nimiq-foundation/teams/110181/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
@@ -19,29 +19,21 @@ msgstr "{appName}要求使用地址"
 msgid "{color} Account"
 msgstr "{color} 帐户"
 
+#: src/views/SetupSwapLedger.vue:57 src/views/SetupSwapLedger.vue:78
+msgid "{percentage} of swap value."
+msgstr ""
+
+#: src/views/SetupSwapLedger.vue:30
+msgid "{totalFees} fees"
+msgstr ""
+
 #: src/components/NonNimiqCheckoutCard.vue:64
 msgid "+ network fee"
 msgstr "+网络费"
 
-#: src/components/LedgerUi.vue:245
-msgid "1. Connect your Ledger Device"
-msgstr "1. 连接您的Ledger设备"
-
-#: src/components/LedgerUi.vue:246
-msgid "2. Enter your PIN"
-msgstr "2. 输入您的PIN码"
-
-#: src/components/LedgerUi.vue:247
-msgid "3. Open the Nimiq App"
-msgstr "3. 打开Nimiq App"
-
 #: src/views/CashlinkReceive.vue:110
 msgid "30 seconds, no email, no download."
 msgstr "30秒，无需邮件，无需下载"
-
-#: src/components/LedgerUi.vue:250
-msgid "4. Click Connect"
-msgstr "4. 单击连接"
 
 #: src/views/CashlinkReceive.vue:207
 msgid "404 - Cash not found"
@@ -51,7 +43,7 @@ msgstr "404 - 找不到现金"
 msgid "Account backed up!"
 msgstr "账户已备份！"
 
-#: src/views/SignupLedger.vue:27
+#: src/views/SignupLedger.vue:28
 msgid "Account Created"
 msgstr "账户已建立"
 
@@ -71,6 +63,10 @@ msgstr "激活更新"
 msgid "Add a message..."
 msgstr "添加消息..."
 
+#: src/views/AddVestingContract.vue:51
+msgid "Add contract"
+msgstr "添加合同"
+
 #: src/views/AddAccountSelection.vue:4
 msgid "Add to account"
 msgstr "添加到帐户"
@@ -79,11 +75,19 @@ msgstr "添加到帐户"
 msgid "Add to Ledger"
 msgstr "添加到Ledger"
 
+#: src/views/AddVestingContract.vue:4
+msgid "Add Vesting Contract"
+msgstr "添加归属合同"
+
+#: src/views/SetupSwapLedger.vue:269
+msgid "Address"
+msgstr ""
+
 #: src/views/AddAddressLedger.vue:16
 msgid "Address Added"
 msgstr "地址已添加"
 
-#: src/views/LoginSuccess.vue:96
+#: src/views/LoginSuccess.vue:97
 msgid "Address detection failed. Retrying..."
 msgstr "地址检测失败。正在重试..."
 
@@ -93,8 +97,17 @@ msgstr "所有标签已保存"
 
 #: src/components/BitcoinCheckoutCard.vue:26
 #: src/components/EthereumCheckoutCard.vue:25
+#: src/views/SetupSwapLedger.vue:262 src/views/SetupSwapLedger.vue:271
 msgid "Amount"
 msgstr "金额"
+
+#: src/views/AddVestingContract.vue:40
+msgid "Amount/Step:"
+msgstr "金额/步骤："
+
+#: src/views/SetupSwapLedger.vue:47
+msgid "Atomic swaps require two BTC transactions."
+msgstr ""
 
 #: src/views/CashlinkManage.vue:158 src/views/CheckoutTransmission.vue:77
 msgid "Awaiting receipt confirmation..."
@@ -116,15 +129,15 @@ msgstr "返回 {Nimiq Miner}"
 msgid "Back to {Wallet}"
 msgstr "返回 {Wallet}"
 
-#: src/views/OnboardingSelector.vue:84
+#: src/views/OnboardingSelector.vue:87
 msgid "Back to Cashlink"
 msgstr "返回现金链接"
 
-#: src/views/OnboardingSelector.vue:78
+#: src/views/OnboardingSelector.vue:81
 msgid "Back to Checkout"
 msgstr "返回结账"
 
-#: src/views/OnboardingSelector.vue:80
+#: src/views/OnboardingSelector.vue:83
 msgid "Back to Choose Address"
 msgstr "返回选择地址"
 
@@ -149,7 +162,7 @@ msgstr "返回Nimiq礼品卡"
 msgid "Back to Nimiq Vote"
 msgstr "返回Nimiq投票"
 
-#: src/views/OnboardingSelector.vue:82
+#: src/views/OnboardingSelector.vue:85
 msgid "Back to Sign Message"
 msgstr "返回签名信息"
 
@@ -161,9 +174,21 @@ msgstr "备份"
 msgid "Backed Up"
 msgstr "已备份"
 
-#: src/views/ActivateBitcoinSuccess.vue:69
+#: src/views/AddVestingContract.vue:28
+msgid "Balance:"
+msgstr "金额："
+
+#: src/views/SetupSwapLedger.vue:106 src/views/SetupSwapLedger.vue:153
+msgid "Bitcoin"
+msgstr ""
+
+#: src/views/ActivateBitcoinSuccess.vue:89
 msgid "Bitcoin activated"
 msgstr "比特币已激活"
+
+#: src/views/AddVestingContract.vue:36
+msgid "Blocks/Step:"
+msgstr "区块/步骤："
 
 #: src/lib/LabelingMachine.ts:43
 msgid "Blue"
@@ -172,6 +197,10 @@ msgstr "蓝"
 #: src/lib/LabelingMachine.ts:48
 msgid "Brown"
 msgstr "棕"
+
+#: src/views/SetupSwapLedger.vue:42
+msgid "BTC network fee"
+msgstr ""
 
 #: src/views/CashlinkCreate.vue:20
 msgid ""
@@ -272,6 +301,10 @@ msgstr "领取现金"
 msgid "Claiming Cashlink"
 msgstr "正在领取现金链接"
 
+#: src/components/LedgerUi.vue:300
+msgid "Click Connect"
+msgstr ""
+
 #: src/views/RequestError.vue:31
 msgid "Close"
 msgstr "关闭"
@@ -280,7 +313,11 @@ msgstr "关闭"
 msgid "Collecting payment details"
 msgstr "收集付款明细"
 
-#: src/components/LedgerUi.vue:183
+#: src/views/SetupSwapLedger.vue:986
+msgid "Confirm {outgoingOrIncoming} transaction on Ledger"
+msgstr ""
+
+#: src/components/LedgerUi.vue:214
 msgid "Confirm Address"
 msgstr "确认地址"
 
@@ -288,15 +325,24 @@ msgstr "确认地址"
 msgid "Confirm Cashlink"
 msgstr "确认现金链接"
 
-#: src/components/LedgerUi.vue:184
+#: src/views/SetupSwapLedger.vue:5
+msgid "Confirm Swap"
+msgstr ""
+
+#: src/components/LedgerUi.vue:217
 msgid "Confirm that the address on your Ledger matches {addressToConfirm}"
 msgstr "确认您Ledger中的地址与{addressToConfirm}相匹配"
 
-#: src/components/LedgerUi.vue:192 src/views/SignTransactionLedger.vue:34
+#: src/components/LedgerUi.vue:216
+msgid "Confirm the address on your Ledger"
+msgstr "确认Ledger上的地址"
+
+#: src/components/LedgerUi.vue:235 src/views/SignBtcTransactionLedger.vue:4
+#: src/views/SignTransactionLedger.vue:34
 msgid "Confirm Transaction"
 msgstr "确认交易"
 
-#: src/components/LedgerUi.vue:193
+#: src/components/LedgerUi.vue:236
 msgid "Confirm using your Ledger"
 msgstr "确认使用您的Ledger"
 
@@ -312,13 +358,17 @@ msgstr "恭喜，您刚刚打开了Nimiq 现金链接"
 msgid "Congrats, you received a Nimiq Gift Card."
 msgstr "恭喜，您收到了Nimiq礼品卡"
 
-#: src/components/LedgerUi.vue:32
+#: src/components/LedgerUi.vue:38
 msgid "Connect"
 msgstr "连接"
 
-#: src/components/LedgerUi.vue:254 src/components/OnboardingMenu.vue:5
+#: src/components/LedgerUi.vue:308 src/components/OnboardingMenu.vue:5
 msgid "Connect Ledger"
 msgstr "连接Ledger"
+
+#: src/components/LedgerUi.vue:295
+msgid "Connect your Ledger Device"
+msgstr ""
 
 #: src/components/OnboardingMenu.vue:6
 msgid "Connect your Ledger Nano S or Nano X."
@@ -347,10 +397,18 @@ msgstr "正在联系种子节点..."
 msgid "Contacts are not affected."
 msgstr "联系人不受影响"
 
-#: src/components/NotEnoughCookieSpace.vue:8 src/views/LoginSuccess.vue:142
-#: src/views/LoginSuccess.vue:170 src/views/SignupLedger.vue:129
+#: src/components/NotEnoughCookieSpace.vue:8 src/views/LoginSuccess.vue:152
+#: src/views/LoginSuccess.vue:180 src/views/SignupLedger.vue:143
 msgid "Continue"
 msgstr "继续"
+
+#: src/views/AddVestingContract.vue:56
+msgid "Contract added."
+msgstr "合同已添加"
+
+#: src/views/AddVestingContract.vue:20
+msgid "Contract Information"
+msgstr "合同信息"
 
 #: src/views/CashlinkManage.vue:32
 msgid "Copied"
@@ -388,7 +446,7 @@ msgstr "建立现金链接"
 msgid "Creating your Account"
 msgstr "正在建立您的帐户"
 
-#: src/views/CashlinkManage.vue:195 src/views/SignTransactionLedger.vue:436
+#: src/views/CashlinkManage.vue:195 src/views/SignTransactionLedger.vue:472
 msgid "Creating your Cashlink"
 msgstr "正在建立您的现金链接"
 
@@ -413,34 +471,56 @@ msgstr "完成"
 msgid "Enter manually"
 msgstr "手动输入"
 
+#: src/views/AddVestingContract.vue:45
+msgid "Enter the address of a vesting contract."
+msgstr "输入归属合同的地址。"
+
+#: src/components/LedgerUi.vue:296
+msgid "Enter your PIN"
+msgstr ""
+
 #: src/views/CashlinkCreate.vue:160
 msgid "express"
 msgstr "表现"
 
-#: src/views/SignupLedger.vue:113
+#: src/views/SignupLedger.vue:120
 msgid "Failed to fetch addresses. Retrying..."
 msgstr "无法获取地址。正在重试..."
 
+#: src/views/SignBtcTransactionLedger.vue:30
 #: src/views/SignTransactionLedger.vue:71
 msgid "fee"
 msgstr "费用"
 
 #: src/components/BitcoinCheckoutCard.vue:44
-#: src/components/CurrencyInfo.vue:15
+#: src/components/CurrencyInfo.vue:15 src/views/SetupSwapLedger.vue:264
+#: src/views/SetupSwapLedger.vue:280
 msgid "Fee"
 msgstr "费用"
 
-#: src/components/LedgerUi.vue:179 src/views/SignupLedger.vue:99
-msgid "Fetching Addresses"
+#: src/views/LoginSuccess.vue:105 src/views/SignupLedger.vue:108
+msgid "Fetching Addresses Failed"
+msgstr "提取地址失败"
+
+#: src/views/AddVestingContract.vue:16
+msgid "Fetching contract information..."
+msgstr "正在获取合同信息..."
+
+#: src/views/SetupSwapSuccess.vue:490
+msgid "Fetching swap data failed: {error}"
+msgstr "提取交换数据失败：{error}"
+
+#: src/views/SetupSwapSuccess.vue:480
+msgid "Fetching swap data..."
+msgstr "正在获取交换数据..."
+
+#: src/components/LedgerUi.vue:230 src/views/ActivateBitcoinSuccess.vue:87
+#: src/views/BitcoinSyncBaseView.vue:48 src/views/LoginSuccess.vue:42
+#: src/views/SignupLedger.vue:104
+msgid "Fetching your Addresses"
 msgstr "正在提取地址"
 
-#: src/views/ActivateBitcoinSuccess.vue:36 src/views/LoginSuccess.vue:42
-#: src/views/RefundSwap.vue:5 src/views/SetupSwap.vue:5
-#: src/views/SignBtcTransaction.vue:5
-msgid "Fetching your addresses"
-msgstr "正在提取您的地址"
-
-#: src/views/SignupLedger.vue:30
+#: src/views/SignupLedger.vue:31
 msgid "Finish"
 msgstr "结束"
 
@@ -492,10 +572,14 @@ msgstr ""
 "试想如果使用\n"
 "加密很容易"
 
-#: src/views/LoginSuccess.vue:153 src/views/SignupLedger.vue:117
+#: src/views/LoginSuccess.vue:163 src/views/SignupLedger.vue:124
 msgid ""
 "Imported {count} address so far... | Imported {count} addresses so far..."
 msgstr "目前已导入{count}个地址... | 目前已导入{count}个地址..."
+
+#: src/views/SetupSwapLedger.vue:989
+msgid "incoming"
+msgstr ""
 
 #: src/components/CheckoutCard.vue:190
 msgid "Incomplete payment"
@@ -515,6 +599,10 @@ msgid ""
 "Cashlink was claimed."
 msgstr "它不会成为公共区块链的一部分，并且可能会在使用现金链接之后被丢失"
 
+#: src/views/OnboardingSelector.vue:96
+msgid "Join Nimiq"
+msgstr "加入 Nimiq"
+
 #: src/lib/LabelingMachine.ts:17
 msgid "Ledger Account"
 msgstr "Ledger 帐户"
@@ -525,7 +613,7 @@ msgid ""
 " created when setting up your device."
 msgstr "Ledger帐户无法导出。请参考设置设备时创建的24字备份"
 
-#: src/components/LedgerUi.vue:220
+#: src/components/LedgerUi.vue:265
 msgid "Ledger not supported by browser."
 msgstr "此浏览器不支持Ledger"
 
@@ -533,7 +621,7 @@ msgstr "此浏览器不支持Ledger"
 msgid "Legacy Account"
 msgstr "传统账户"
 
-#: src/components/LedgerUi.vue:165
+#: src/components/LedgerUi.vue:197
 msgid "Loading failed, retrying..."
 msgstr "加载失败，正在重试..."
 
@@ -558,7 +646,7 @@ msgstr "登录文件已导出！"
 msgid "Login to existing account"
 msgstr "登录到现有帐户"
 
-#: src/views/OnboardingSelector.vue:95
+#: src/views/OnboardingSelector.vue:100
 msgid "Login to fund your Cashlink"
 msgstr "登录以资助您的现金链接"
 
@@ -590,6 +678,10 @@ msgstr "新地址已添加到您的帐户"
 msgid "New Cashlink"
 msgstr "新的现金链接"
 
+#: src/views/SetupSwapLedger.vue:64
+msgid "NIM network fee"
+msgstr ""
+
 #: src/views/Migrate.vue:23
 msgid "Nimiq implements the ImageWallet standard with the Nimiq Login File."
 msgstr "Nimiq使用Nimiq登录文件实现图像钱包 (ImageWallet) 标准"
@@ -607,6 +699,12 @@ msgstr "不是"
 msgid "No App found"
 msgstr "找不到应用"
 
+#: src/views/OnboardingSelector.vue:109
+msgid ""
+"No registration, no install,\n"
+"100% free"
+msgstr ""
+
 #: src/components/NimiqCheckoutCard.vue:69
 msgid "None of your available addresses has sufficient balance."
 msgstr "您的可用地址皆没有足够的余额"
@@ -614,6 +712,10 @@ msgstr "您的可用地址皆没有足够的余额"
 #: src/views/Migrate.vue:224
 msgid "Nothing to update."
 msgstr "无需更新"
+
+#: src/views/SetupSwapLedger.vue:52
+msgid "OASIS service fee"
+msgstr ""
 
 #: src/views/ErrorHandlerUnsupportedLedger.vue:4
 msgid "Ok"
@@ -623,6 +725,10 @@ msgstr "Ok"
 msgid "One account can now have multiple addresses."
 msgstr "一个帐户现在可以具有多个地址"
 
+#: src/components/LedgerUi.vue:298
+msgid "Open the {app} App"
+msgstr ""
+
 #: src/components/NonNimiqCheckoutCard.vue:94
 msgid "Open Wallet App"
 msgstr "打开钱包应用"
@@ -631,11 +737,19 @@ msgstr "打开钱包应用"
 msgid "Orange"
 msgstr "橙"
 
+#: src/views/SetupSwapLedger.vue:988
+msgid "outgoing"
+msgstr ""
+
+#: src/views/AddVestingContract.vue:22
+msgid "Owner:"
+msgstr "所有者："
+
 #: src/components/NonNimiqCheckoutCard.vue:103
 msgid "Pay with {currencyFullName}"
 msgstr "使用{currencyFullName}支付"
 
-#: src/views/OnboardingSelector.vue:93
+#: src/views/OnboardingSelector.vue:98
 msgid "Pay with Nimiq"
 msgstr "使用Nimiq支付"
 
@@ -651,11 +765,11 @@ msgstr "付款成功"
 msgid "Pink"
 msgstr "粉红"
 
-#: src/components/LedgerUi.vue:205
+#: src/components/LedgerUi.vue:248
 msgid "Please cancel the previous request on your Ledger."
 msgstr "请在您的Ledger上取消先前的请求"
 
-#: src/components/LedgerUi.vue:154
+#: src/components/LedgerUi.vue:186
 msgid "Please cancel the request on your Ledger"
 msgstr "请在您的Ledger上取消请求"
 
@@ -675,7 +789,7 @@ msgstr "请手动发送交易"
 msgid "Prepare for update"
 msgstr "准备更新"
 
-#: src/views/SetupSwapSuccess.vue:5
+#: src/views/SetupSwapSuccess.vue:473
 msgid "Preparing Swap"
 msgstr "准备交换"
 
@@ -703,11 +817,11 @@ msgstr "刷新"
 msgid "Rename Account"
 msgstr "重命名账户"
 
-#: src/components/LedgerUi.vue:234
+#: src/components/LedgerUi.vue:282
 msgid "Request failed"
 msgstr "请求失败"
 
-#: src/components/LedgerUi.vue:235
+#: src/components/LedgerUi.vue:283
 msgid "Request failed: "
 msgstr "请求失败:"
 
@@ -723,6 +837,11 @@ msgstr "重新开始付款"
 msgid "Retrieving your old accounts..."
 msgstr "正在检索您的旧帐户..."
 
+#: src/views/BitcoinSyncBaseView.vue:68 src/views/LoginSuccess.vue:107
+#: src/views/SetupSwapSuccess.vue:498 src/views/SignupLedger.vue:145
+msgid "Retry"
+msgstr "重试"
+
 #: src/views/Rename.vue:18
 msgid "Save"
 msgstr "储存"
@@ -732,7 +851,7 @@ msgstr "储存"
 msgid "Send your transaction"
 msgstr "发送您的交易"
 
-#: src/views/SignTransactionLedger.vue:437
+#: src/views/SignTransactionLedger.vue:473
 msgid "Sending Transaction"
 msgstr "发送交易"
 
@@ -752,7 +871,7 @@ msgstr "分享"
 msgid "Sign Message"
 msgstr "签名信息"
 
-#: src/views/SetupSwapSuccess.vue:6
+#: src/views/SetupSwapSuccess.vue:482
 msgid "Signing transactions..."
 msgstr "正在签署交易..."
 
@@ -768,7 +887,7 @@ msgstr "出了点问题"
 msgid "Something went wrong with your request. Please try again."
 msgstr "您的请求出了点问题，请再试一次"
 
-#: src/views/LoginSuccess.vue:138
+#: src/views/LoginSuccess.vue:148
 msgid "Space exceeded"
 msgstr "超出范围"
 
@@ -780,36 +899,74 @@ msgstr "加快您的交易"
 msgid "standard"
 msgstr "标准"
 
+#: src/views/AddVestingContract.vue:32
+msgid "Start Block:"
+msgstr "起始区块："
+
 #: src/views/Migrate.vue:233
 msgid "Storing your new accounts..."
 msgstr "正在存储您的新帐户..."
 
-#: src/components/NimiqCheckoutCard.vue:277 src/views/CashlinkManage.vue:154
+#: src/views/SetupSwapLedger.vue:73
+msgid "Swap fee"
+msgstr ""
+
+#: src/views/SetupSwapLedger.vue:850 src/views/SetupSwapSuccess.vue:469
+msgid "Swap Setup Failed"
+msgstr ""
+
+#: src/views/RefundSwapLedger.vue:306
+msgid "Syncing"
+msgstr ""
+
+#: src/components/NimiqCheckoutCard.vue:277
+#: src/views/AddVestingContract.vue:11 src/views/CashlinkManage.vue:154
 #: src/views/CheckoutTransmission.vue:73
 msgid "Syncing consensus..."
 msgstr "正在同步共识..."
 
-#: src/views/ActivateBitcoinSuccess.vue:37 src/views/RefundSwap.vue:6
-#: src/views/SetupSwap.vue:6 src/views/SignBtcTransaction.vue:6
+#: src/views/BitcoinSyncBaseView.vue:50 src/views/SetupSwapLedger.vue:852
+#: src/views/SetupSwapSuccess.vue:471
+#: src/views/SignBtcTransactionLedger.vue:117
+msgid "Syncing Failed"
+msgstr "同步失败"
+
+#: src/views/RefundSwapLedger.vue:316
+msgid "Syncing with {currency} network failed: {error}"
+msgstr ""
+
+#: src/views/RefundSwapLedger.vue:311
+msgid "Syncing with {currency} network..."
+msgstr ""
+
+#: src/views/BitcoinSyncBaseView.vue:63
+msgid "Syncing with Bitcoin network failed: {error}"
+msgstr "与比特币网络同步失败：{error}"
+
+#: src/views/BitcoinSyncBaseView.vue:58 src/views/SetupSwapLedger.vue:862
 msgid "Syncing with Bitcoin network..."
 msgstr "正在与比特币网络同步..."
+
+#: src/views/LoginSuccess.vue:106 src/views/SignupLedger.vue:134
+msgid "Syncing with the network failed: {error}"
+msgstr "与网络同步失败：{error}"
 
 #: src/lib/LabelingMachine.ts:45
 msgid "Teal"
 msgstr "青"
 
-#: src/components/LedgerUi.vue:229
-msgid "The connected Ledger is not the one this account belongs to."
-msgstr "您所连接的Ledger不是该帐户所属的Ledger"
+#: src/components/LedgerUi.vue:277
+msgid "The connected wallet or Ledger is not the one this account belongs to."
+msgstr "您连接的钱包或Ledger不是这个账户所属的。"
 
-#: src/i18n/i18n-setup.ts:58
+#: src/i18n/i18n-setup.ts:64
 msgid ""
 "The display language changed. Do you want to reload the page to update all "
 "translations? Otherwise, some translations might not be updated "
 "automatically. ({oldLang} to {newLang})"
 msgstr "显示语言已更改。您要重新加载页面以更新所有翻译吗？否则，某些翻译可能不会自动更新。 （{oldLang}至{newLang}）"
 
-#: src/components/CheckoutCard.vue:168 src/views/SignTransactionLedger.vue:443
+#: src/components/CheckoutCard.vue:168 src/views/SignTransactionLedger.vue:479
 msgid "The offer expired."
 msgstr "报价已过期"
 
@@ -831,7 +988,7 @@ msgstr "此现金链接已被领取"
 msgid "This is not a valid Cashlink, sorry."
 msgstr "抱歉，这不是有效的现金链接。"
 
-#: src/views/SignupLedger.vue:29
+#: src/views/SignupLedger.vue:30
 msgid "This is your account with your first address in it."
 msgstr "这是您的账户及您的第一个地址。"
 
@@ -851,6 +1008,10 @@ msgstr "Nimiq的用户界面为非托管，仅用于连接付款的发送方与�
 msgid "This operation is not supported for Ledgers."
 msgstr "Ledger不支持此操作"
 
+#: src/views/SetupSwapLedger.vue:25
+msgid "This rate includes the swap fee."
+msgstr ""
+
 #: src/views/Migrate.vue:6
 msgid "Time to grow"
 msgstr "是时候成长了"
@@ -860,6 +1021,10 @@ msgid ""
 "To change the PIN of your Ledger please go to the settings on your device."
 msgstr "欲更改Ledger的PIN码，请转到设备上的设置"
 
+#: src/views/SetupSwapLedger.vue:86
+msgid "Total fees"
+msgstr ""
+
 #: src/views/CashlinkManage.vue:177 src/views/CheckoutTransmission.vue:61
 msgid "Transaction could not be relayed"
 msgstr "交易无法转发"
@@ -868,11 +1033,12 @@ msgstr "交易无法转发"
 msgid "Transaction is expired"
 msgstr "交易已过期"
 
-#: src/views/SignTransactionLedger.vue:441
+#: src/views/SignTransactionLedger.vue:477
 msgid "Transaction Sent"
 msgstr "交易已发送"
 
-#: src/views/SignTransactionLedger.vue:440
+#: src/views/SignBtcTransactionLedger.vue:116
+#: src/views/SignTransactionLedger.vue:476
 msgid "Transaction Signed"
 msgstr "交易已签署"
 
@@ -890,12 +1056,16 @@ msgid ""
 "and/or addresses. Please log out of unused accounts to free up space."
 msgstr "很遗憾地，由于Safari的限制，您无法添加更多帐户和/或地址。请登出未使用的帐户以释放空间。"
 
-#: src/views/LoginSuccess.vue:140
+#: src/views/LoginSuccess.vue:150
 msgid ""
 "Unfortunately, due to space restrictions of Safari and IOS, this account "
 "cannot be stored properly. Please free up space by logging out of other "
 "accounts."
 msgstr "很遗憾地，由于Safari和IOS的空间限制，该帐户无法正确存储。请通过登出其他帐户释放空间。"
+
+#: src/views/SignBtcTransactionLedger.vue:9
+msgid "Unlabeled"
+msgstr "无标签"
 
 #: src/views/ErrorHandlerUnsupportedLedger.vue:36
 msgid "Unsupported Request"
@@ -925,7 +1095,7 @@ msgstr ""
 "使用您的登录文件\n"
 "或恢复字登录。"
 
-#: src/views/LoginSuccess.vue:169 src/views/SignupLedger.vue:124
+#: src/views/LoginSuccess.vue:179 src/views/SignupLedger.vue:132
 msgid "Used addresses without balance might have been missed."
 msgstr "已使用地址若没有余额可能会丢失"
 
@@ -933,7 +1103,7 @@ msgstr "已使用地址若没有余额可能会丢失"
 msgid "Verify Payment"
 msgstr "验证付款"
 
-#: src/lib/LabelingMachine.ts:25
+#: src/lib/LabelingMachine.ts:25 src/views/AddVestingContract.vue:137
 msgid "Vesting Contract"
 msgstr "归属合同"
 
@@ -945,7 +1115,7 @@ msgstr ""
 "欢迎来到\n"
 "Nimiq区块链"
 
-#: src/views/SignupLedger.vue:105
+#: src/views/SignupLedger.vue:112
 msgid "Welcome to the Nimiq Blockchain."
 msgstr "欢迎来到Nimiq区块链"
 
@@ -979,21 +1149,31 @@ msgid ""
 "refund. Restart to pay for your order."
 msgstr "您转入的金额不足，请联系商家进行退款，并重新支付您的订单"
 
-#: src/views/SignupLedger.vue:104
+#: src/views/SignupLedger.vue:111
 msgid "You're logged in!"
 msgstr "您已登录！"
 
-#: src/views/LoginSuccess.vue:184
+#: src/components/LedgerUi.vue:269
+msgid ""
+"Your {app} app is outdated. Please update your Ledger firmware and {app} app"
+" using Ledger Live."
+msgstr "您的{app}应用已过时。 请使用Ledger Live更新您的Ledger固件和{app}应用。"
+
+#: src/views/LoginSuccess.vue:194
 msgid "Your Account is ready. | Your Accounts are ready."
 msgstr "您的帐户已准备就绪。 | 您的帐户已准备就绪。"
 
-#: src/views/LoginSuccess.vue:167 src/views/SignupLedger.vue:101
+#: src/views/LoginSuccess.vue:177 src/views/SignupLedger.vue:106
 msgid ""
 "Your Addresses may be\n"
 "incomplete."
 msgstr ""
 "您的地址可能\n"
 "不完整"
+
+#: src/views/SetupSwapLedger.vue:110
+msgid "Your Bank"
+msgstr ""
 
 #: src/views/LogoutLedger.vue:13
 msgid ""
@@ -1007,12 +1187,6 @@ msgstr ""
 msgid "Your message is signed."
 msgstr "您的信息已签署"
 
-#: src/components/LedgerUi.vue:223
-msgid ""
-"Your Nimiq App is outdated. Please update your Ledger firmware and Nimiq App"
-" using Ledger Live."
-msgstr "您的Nimiq应用已过时，请使用Ledger Live更新您的Ledger固件和Nimiq应用。"
-
-#: src/views/LoginSuccess.vue:178 src/views/SimpleSuccess.vue:31
+#: src/views/LoginSuccess.vue:188 src/views/SimpleSuccess.vue:31
 msgid "Your password was changed."
 msgstr "您的密码已更改"

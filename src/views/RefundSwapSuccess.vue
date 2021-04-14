@@ -32,6 +32,7 @@ export default class SignBtcTransactionSuccess extends Vue {
             tx.proof = proof;
 
             // FIXME: Enable validation when HTLC is part of CoreJS web-offline build
+            // The signature check below can then be removed
             // // Validate that transaction is valid
             // if (!tx.verify()) {
             //     this.$rpc.reject(new Error('NIM transaction is invalid'));

@@ -16,8 +16,8 @@ import { WalletType } from '../lib/Constants';
 import Config from 'config';
 
 // Import only types to avoid bundling of KeyguardClient in Ledger request if not required.
-// (But note that currently, the KeyguardClient is still always bundled in th RpcApi).
-type KeyguardDeriveBtcXPubRequest = import('@nimiq/keyguard-client').DeriveBtcXPubRequest;
+// (But note that currently, the KeyguardClient is still always bundled in the RpcApi).
+import type { DeriveBtcXPubRequest as KeyguardDeriveBtcXPubRequest } from '@nimiq/keyguard-client';
 
 @Component({components: {NotEnoughCookieSpace}})
 export default class ActivateBitcoin extends Vue {

@@ -243,9 +243,10 @@ export default class SignupLedger extends Vue {
         // Add wallet to vuex
         this.$addWalletAndSetActive(this.walletInfo!);
 
+        const result: Account[] = [await this.walletInfo!.toAccountType()];
+
         this.state = SignupLedger.State.FINISHED;
         setTimeout(() => {
-            const result: Account[] = [this.walletInfo!.toAccountType()];
             this.$rpc.resolve(result);
         }, StatusScreen.SUCCESS_REDIRECT_DELAY);
     }

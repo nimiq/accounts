@@ -2,7 +2,9 @@ import Config from 'config';
 import { BTC_NETWORK_MAIN } from './BitcoinConstants';
 import { loadBitcoinJS } from './BitcoinJSLoader';
 
-type ElectrumClient = import('@nimiq/electrum-client').ElectrumClient;
+// Import only types to avoid bundling of lazy-loaded libs.
+import type { ElectrumClient } from '@nimiq/electrum-client';
+import type { Transaction as BitcoinJsTransaction } from 'bitcoinjs-lib';
 
 let electrumClientPromise: Promise<ElectrumClient> | null = null;
 
@@ -29,7 +31,23 @@ export async function getElectrumClient(waitForConsensus: boolean = true) {
             }
         }
 
-        return new Client();
+        const options = Config.bitcoinNetwork === BTC_NETWORK_MAIN ? {
+            extraSeedPeers: [{
+                host: 'c0a5duastc849ei53vug.bdnodes.net',
+                wssPath: 'electrumx',
+                ports: { wss: 443, ssl: 50002, tcp: null },
+                ip: '',
+                version: '',
+                highPriority: true,
+            }, {
+                host: 'btccore-main.bdnodes.net',
+                ports: { wss: null, ssl: 50002, tcp: null },
+                ip: '',
+                version: '',
+            }],
+        } : {};
+
+        return new Client(options);
     })();
 
     let client: ElectrumClient;
@@ -45,4 +63,15 @@ export async function getElectrumClient(waitForConsensus: boolean = true) {
     }
 
     return client;
+}
+
+export async function fetchTransaction(transactionHash: string): Promise<BitcoinJsTransaction> {
+    const [electrum, transactionFromPlain] = await Promise.all([
+        getElectrumClient(),
+        import(/*webpackChunkName: "electrum-client"*/ '@nimiq/electrum-client')
+            .then((module) => module.transactionFromPlain),
+    ]);
+
+    const fetchedTransaction = await electrum.getTransaction(transactionHash);
+    return transactionFromPlain(fetchedTransaction);
 }

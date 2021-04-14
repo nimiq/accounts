@@ -1,5 +1,9 @@
 <template>
-    <div class="ledger-ui" :class="{ small, 'has-connect-button': showConnectButton }">
+    <div class="ledger-ui" :class="{
+        small,
+        'has-connect-button': showConnectButton,
+        'is-wrong-app-connected': wrongAppConnected,
+    }">
         <StatusScreen :state="'loading'" :title="instructionsTitle" :status="instructionsText" :small="small">
             <template slot="loading">
                 <transition name="transition-fade">
@@ -66,6 +70,7 @@ class LedgerUi extends Vue {
     private instructionsTitle: string = '';
     private instructionsText: string = '';
     private showConnectButton: boolean = false;
+    private wrongAppConnected: boolean = false;
     private connectAnimationStep: number = -1;
     private connectAnimationInterval: number = -1;
     private connectTimer: number = -1;
@@ -200,6 +205,7 @@ class LedgerUi extends Vue {
             // TODO instructions for u2f/WebAuthn confirmation on Ledger for fetching BTC public keys / addresses.
             case RequestTypeBitcoin.GET_WALLET_ID:
                 // no instructions needed as not interactive
+                this._showInstructions(null);
                 break;
             case RequestTypeNimiq.GET_ADDRESS:
             case RequestTypeBitcoin.GET_ADDRESS_AND_PUBLIC_KEY:
@@ -213,7 +219,10 @@ class LedgerUi extends Vue {
                                 { addressToConfirm: request.expectedAddress },
                             ) as string,
                     );
-                } // else no instructions needed as not interactive
+                } else {
+                    // no instructions needed as not interactive
+                    this._showInstructions(null);
+                }
                 break;
             case RequestTypeNimiq.DERIVE_ADDRESSES:
             case RequestTypeBitcoin.GET_EXTENDED_PUBLIC_KEY:
@@ -242,17 +251,15 @@ class LedgerUi extends Vue {
                 this.loadingFailed = true;
                 this._onStateLoading(); // show as still loading / retrying
                 break;
-            case ErrorType.WRONG_APP:
-                // No instructions to set here. The state change triggers the connection animation and instruction loop.
-                this.showConnectButton = false; // we're connected to the Ledger but the wrong app
-                break;
             case ErrorType.USER_INTERACTION_REQUIRED:
             case ErrorType.CONNECTION_ABORTED:
+            case ErrorType.WRONG_APP:
                 // No instructions to set here. The state change triggers the connection animation and instruction loop.
-                // Set showConnectButton as flag and not have it as a getter depending on the state such that the
-                // animation loop continues to include the fourth step for consistency even when the error is resolved
-                // and the api switches to the connecting state.
-                this.showConnectButton = true;
+                // Set showConnectButton and wrongAppConnected as flags and not have them as a getters depending on the
+                // state such that the connect animation loop continues to adapt accordingly, for consistency even when
+                // the error is resolved and the api switches to the connecting state.
+                this.showConnectButton = errorState.errorType !== ErrorType.WRONG_APP; // reset even if wrong app
+                this.wrongAppConnected = this.wrongAppConnected || errorState.errorType === ErrorType.WRONG_APP;
                 break;
             case ErrorType.BROWSER_UNSUPPORTED:
                 this._showInstructions('', this.$t('Ledger not supported by browser.') as string);
@@ -283,18 +290,25 @@ class LedgerUi extends Vue {
 
     private _cycleConnectInstructions() {
         const app = LedgerApi.currentRequest ? LedgerApi.currentRequest.requiredApp : 'Nimiq';
-        const instructions = [
-            this.$t('1. Connect your Ledger Device') as string,
-            this.$t('2. Enter your PIN') as string,
-            this.$t('3. Open the {app} App', { app }) as string,
-        ];
+        let instructions = !this.wrongAppConnected
+            ? [
+                this.$t('Connect your Ledger Device') as string,
+                this.$t('Enter your PIN') as string,
+            ] : [];
+        instructions.push(this.$t('Open the {app} App', { app }) as string);
         if (this.showConnectButton) {
-            instructions.push(this.$t('4. Click Connect') as string);
+            instructions.push(this.$t('Click Connect') as string);
+        }
+        if (instructions.length > 1) {
+            // show step numbers
+            instructions = instructions.map((instruction, i) => `${i + 1}. ${instruction}`);
         }
         const oldInstructionIndex = instructions.indexOf(this.instructionsText);
         const instructionIndex = (oldInstructionIndex + 1) % instructions.length;
         this._showInstructions(this.$t('Connect Ledger') as string, instructions[instructionIndex]);
-        this.connectAnimationStep = instructionIndex + 1; // Set animation step which starts counting at 1
+        // Set animation step which starts counting at 1. If first instruction steps were skipped, also skip them in
+        // the animation.
+        this.connectAnimationStep = (this.wrongAppConnected ? 2 : 0) + instructionIndex + 1;
     }
 
     @Watch('illustration', { immediate: true })
@@ -307,6 +321,7 @@ class LedgerUi extends Vue {
             clearInterval(this.connectAnimationInterval);
             this.connectAnimationStep = -1;
             this.showConnectButton = false;
+            this.wrongAppConnected = false;
         }
     }
 
@@ -536,8 +551,10 @@ export default LedgerUi;
     .ledger-device-container[illustration="connecting"][connect-animation-step="3"] .ledger-opacity-container {
         animation: ledger-fade-out var(--ledger-connect-animation-step-duration) both;
     }
-    .ledger-device-container[illustration="connecting"][connect-animation-step="3"] .ledger-screen-dashboard {
-        animation: ledger-show-screen-dashboard var(--ledger-connect-animation-step-duration) both;
+    .ledger-device-container[illustration="connecting"][connect-animation-step="3"] .ledger-screen-dashboard,
+    .ledger-device-container[illustration="connecting"][connect-animation-step="4"] .ledger-screen-dashboard {
+        /* The dashboard animation duration spans two steps (but can be cut after the first step), see below */
+        animation: ledger-show-screen-dashboard calc(2 * var(--ledger-connect-animation-step-duration)) both;
         display: flex;
     }
     .ledger-device-container[illustration="connecting"][connect-animation-step="3"] .ledger-screen-app {
@@ -553,9 +570,29 @@ export default LedgerUi;
     }
     .has-connect-button [illustration="connecting"][connect-animation-step="3"] .ledger-screen-app,
     .has-connect-button [illustration="connecting"][connect-animation-step="4"] .ledger-screen-app {
-        /* Use animation with double the duration */
+        /* Use animation with double the duration to span over two animation steps */
         animation: ledger-show-screen-app-double-duration calc(2 * var(--ledger-connect-animation-step-duration)) both;
         display: flex;
+    }
+
+    .is-wrong-app-connected [illustration="connecting"][connect-animation-step="3"] .ledger-opacity-container,
+    .is-wrong-app-connected [illustration="connecting"][connect-animation-step="4"] .ledger-opacity-container {
+        /* Keep the device displayed without animating it */
+        animation: none;
+    }
+    .is-wrong-app-connected [illustration="connecting"][connect-animation-step="3"] .ledger-screen-app,
+    .is-wrong-app-connected [illustration="connecting"][connect-animation-step="4"] .ledger-screen-app {
+        /* Use animation with double the duration even if there is only a single animation step, to avoid too quick back
+        and forth switching between the dashboard and the app screen. Note that the dashboard animation is also designed
+        to span two animation steps to run in sync with the app animation. */
+        animation: ledger-show-screen-app-double-duration calc(2 * var(--ledger-connect-animation-step-duration)) both;
+        /* Keep the animation running */
+        animation-iteration-count: infinite;
+    }
+    .is-wrong-app-connected [illustration="connecting"][connect-animation-step="3"] .ledger-screen-dashboard,
+    .is-wrong-app-connected [illustration="connecting"][connect-animation-step="4"] .ledger-screen-dashboard {
+        /* Keep the animation running */
+        animation-iteration-count: infinite;
     }
 
     @keyframes ledger-connect-cable {
@@ -626,14 +663,17 @@ export default LedgerUi;
         }
     }
 
+    /* This animation is designed for a duration of two animation steps to run in sync with the app animation if it runs
+    over 2 steps but the actual animation happens within the first animation step and the second animation step is just
+    transparency such that the animation can also be cut after the first step. */
     @keyframes ledger-show-screen-dashboard {
         0% {
             opacity: 0;
         }
-        5%, 50% {
+        2.5%, 25% {
             opacity: 1;
         }
-        55%, 100% {
+        27.5%, 100% {
             opacity: 0;
         }
     }

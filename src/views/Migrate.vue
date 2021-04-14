@@ -265,7 +265,7 @@ export default class Migrate extends Vue {
 
         this.title = this.$t('Accounts updated!') as string;
         this.state = StatusScreen.State.SUCCESS;
-        const listResult: Account[] = walletInfos.map((walletInfo) => walletInfo.toAccountType());
+        const listResult: Account[] = await Promise.all(walletInfos.map((walletInfo) => walletInfo.toAccountType()));
         setTimeout(() => this.$rpc.resolve(listResult), StatusScreen.SUCCESS_REDIRECT_DELAY);
     }
 

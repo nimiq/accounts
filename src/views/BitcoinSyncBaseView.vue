@@ -60,7 +60,7 @@ export default class BitcoinSyncBaseView extends Vue {
 
     protected get statusScreenMessage() {
         if (this.state !== this.State.SYNCING_FAILED) return '';
-        return this.$t('Syncing with Bitcoin network failed: {error}', { error: this.error });
+        return this.$t('Syncing with Bitcoin network failed: {error}', { error: this.error }) as string;
     }
 
     protected get statusScreenAction() {

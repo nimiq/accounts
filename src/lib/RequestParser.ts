@@ -1,34 +1,38 @@
 import { isMilliseconds, includesOrigin } from './Helpers';
 import { State } from '@nimiq/rpc';
 import {
-    BasicRequest,
+    RequestType,
     CashlinkTheme,
+    Currency,
+    PaymentType,
+} from './PublicRequestTypes';
+import type {
+    BasicRequest,
     CheckoutRequest,
     CreateCashlinkRequest,
     ExportRequest,
     ManageCashlinkRequest,
     OnboardRequest,
+    ChooseAddressRequest,
     RenameRequest,
     RpcRequest,
     SignMessageRequest,
     SignTransactionRequest,
     SimpleRequest,
-    Currency,
-    PaymentType,
-    RequestType,
     NimiqCheckoutRequest,
     MultiCurrencyCheckoutRequest,
     SignBtcTransactionRequest,
     SetupSwapRequest,
     RefundSwapRequest,
 } from './PublicRequestTypes';
-import {
+import type {
     ParsedBasicRequest,
     ParsedCheckoutRequest,
     ParsedCreateCashlinkRequest,
     ParsedExportRequest,
     ParsedManageCashlinkRequest,
     ParsedOnboardRequest,
+    ParsedChooseAddressRequest,
     ParsedRenameRequest,
     ParsedRpcRequest,
     ParsedSignMessageRequest,
@@ -253,8 +257,19 @@ export class RequestParser {
                     appName: onboardRequest.appName,
                     disableBack: !!onboardRequest.disableBack,
                 } as ParsedOnboardRequest;
-            case RequestType.SIGNUP:
             case RequestType.CHOOSE_ADDRESS:
+                const chooseAddressRequest = request as ChooseAddressRequest;
+                return {
+                    kind: requestType,
+                    appName: chooseAddressRequest.appName,
+                    returnBtcAddress: !!chooseAddressRequest.returnBtcAddress,
+                    minBalance: Number(chooseAddressRequest.minBalance) || 0,
+                    disableContracts: !!chooseAddressRequest.disableContracts,
+                    disableLegacyAccounts: !!chooseAddressRequest.disableLegacyAccounts,
+                    disableBip39Accounts: !!chooseAddressRequest.disableBip39Accounts,
+                    disableLedgerAccounts: !!chooseAddressRequest.disableLedgerAccounts,
+                } as ParsedChooseAddressRequest;
+            case RequestType.SIGNUP:
             case RequestType.LOGIN:
             case RequestType.MIGRATE:
             case RequestType.ADD_VESTING_CONTRACT:
@@ -386,37 +401,66 @@ export class RequestParser {
                 const inputs = signBtcTransactionRequest.inputs.map((input) => {
                     if (!input || typeof input !== 'object') throw new Error('input must be an object');
 
-                    if (typeof input.transactionHash !== 'string'
-                        || input.transactionHash.length !== 64
-                    ) throw new Error('input must contain a valid transactionHash');
+                    // tslint:disable-next-line:no-shadowed-variable
+                    const { address, transactionHash, outputIndex, value, sequence } = input;
+                    let { outputScript, witnessScript } = input;
 
-                    if (typeof input.outputIndex !== 'number'
-                        || input.outputIndex < 0
-                    ) throw new Error('input must contain a valid outputIndex');
+                    if (typeof address !== 'string') throw new Error('input must contain an address of type string');
 
-                    if (typeof input.outputScript !== 'string'
-                        || (input.outputScript.length !== 44     // P2WPKH
-                            && input.outputScript.length !== 46  // P2SH
-                            && input.outputScript.length !== 50) // P2PKH
-                    ) throw new Error('input must contain a valid outputScript');
+                    if (typeof transactionHash !== 'string' || transactionHash.length !== 64) {
+                        throw new Error('input must contain a valid transactionHash');
+                    }
+                    try {
+                        Nimiq.BufferUtils.fromHex(transactionHash); // throws if invalid hex
+                    } catch (e) {
+                        throw new Error('input transactionHash must be hex');
+                    }
 
-                    if (typeof input.value !== 'number'
-                        || input.value <= 0
-                    ) throw new Error('input must contain a positive value');
+                    if (typeof outputIndex !== 'number' || outputIndex < 0) {
+                        throw new Error('input must contain a valid outputIndex');
+                    }
 
-                    return input;
+                    try {
+                        // Convert to hex. Throws if invalid hex or base64.
+                        outputScript = Nimiq.BufferUtils.toHex(Nimiq.BufferUtils.fromAny(outputScript));
+                    } catch (e) {
+                        throw new Error('input outputScript must be hex or base64');
+                    }
+                    if (outputScript.length !== 44    // P2WPKH
+                        && outputScript.length !== 46 // P2SH
+                        && outputScript.length !== 50 // P2PKH
+                        && outputScript.length !== 68 // HTLC
+                    ) throw new Error('input outputScript has invalid length');
+
+                    if (witnessScript !== undefined) {
+                        if (typeof witnessScript !== 'string') throw new Error('Invalid input witnessScript');
+                        try {
+                            // Convert to hex. Throws if invalid hex or base64.
+                            witnessScript = Nimiq.BufferUtils.toHex(Nimiq.BufferUtils.fromAny(witnessScript));
+                        } catch (e) {
+                            throw new Error('input witnessScript must be hex or base64');
+                        }
+                    }
+
+                    if (typeof value !== 'number' || value <= 0) throw new Error('input must contain a positive value');
+
+                    if (sequence !== undefined && !Nimiq.NumberUtils.isUint32(sequence)) {
+                        throw new Error('Invalid input sequence');
+                    }
+
+                    // return only checked properties
+                    return { address, transactionHash, outputIndex, outputScript, value, witnessScript, sequence };
                 });
 
-                if (!signBtcTransactionRequest.output
-                    || typeof signBtcTransactionRequest.output !== 'object'
-                ) throw new Error('output must be an object');
+                if (!signBtcTransactionRequest.output || typeof signBtcTransactionRequest.output !== 'object') {
+                    throw new Error('output must be an object');
+                }
 
                 const output = signBtcTransactionRequest.output;
 
-                if (!output.value
-                    || typeof output.value !== 'number'
-                    || output.value <= 0
-                ) throw new Error('output must contain a positive value');
+                if (!output.value || typeof output.value !== 'number' || output.value <= 0) {
+                    throw new Error('output must contain a positive value');
+                }
 
                 if (output.label && typeof output.label !== 'string') {
                     throw new Error('output label must be a string');
@@ -430,46 +474,94 @@ export class RequestParser {
 
                     changeOutput = signBtcTransactionRequest.changeOutput;
 
-                    if (!changeOutput.value
-                        || typeof changeOutput.value !== 'number'
-                        || changeOutput.value <= 0
-                    ) throw new Error('changeOutput must contain a positive value');
+                    if (!changeOutput.value || typeof changeOutput.value !== 'number' || changeOutput.value <= 0) {
+                        throw new Error('changeOutput must contain a positive value');
+                    }
                 }
 
-                return {
+                const locktime = signBtcTransactionRequest.locktime;
+                if (locktime !== undefined && !Nimiq.NumberUtils.isUint32(locktime)) {
+                    throw new Error('Invalid locktime');
+                }
+
+                const parsedSignBtcTransactionRequest: ParsedSignBtcTransactionRequest = {
                     kind: RequestType.SIGN_BTC_TRANSACTION,
                     walletId: signBtcTransactionRequest.accountId,
                     appName: signBtcTransactionRequest.appName,
                     inputs,
                     output,
                     changeOutput,
-                } as ParsedSignBtcTransactionRequest;
+                    locktime,
+                };
+                return parsedSignBtcTransactionRequest;
             case RequestType.SETUP_SWAP:
                 const setupSwapRequest = request as SetupSwapRequest;
 
+                if (!setupSwapRequest.accountId) throw new Error('accountId is required');
+
                 // Validate and parse only what we use in the Hub
 
-                if (!['NIM', 'BTC'].includes(setupSwapRequest.fund.type)) {
-                    throw new Error('Funding object type must be "NIM" or "BTC"');
+                if (!['NIM', 'BTC', 'EUR'].includes(setupSwapRequest.fund.type)) {
+                    throw new Error('Funding type is not supported');
                 }
 
-                if (!['NIM', 'BTC'].includes(setupSwapRequest.redeem.type)) {
-                    throw new Error('Redeeming object type must be "NIM" or "BTC"');
+                if (!['NIM', 'BTC'/* , 'EUR' */].includes(setupSwapRequest.redeem.type)) {
+                    throw new Error('Redeeming type is not supported');
                 }
 
                 if (setupSwapRequest.fund.type === setupSwapRequest.redeem.type) {
                     throw new Error('Cannot swap between the same types');
                 }
 
+                if (setupSwapRequest.layout === 'slider') {
+                    if (!Array.isArray(setupSwapRequest.nimiqAddresses)) {
+                        throw new Error('When using the "slider" layout, `nimAddresses` must be an array');
+                    }
+
+                    if (!setupSwapRequest.bitcoinAccount) {
+                        throw new Error('When using the "slider" layout, `bitcoinAccount` must be provided');
+                    }
+
+                    const nimiqAddress = setupSwapRequest.fund.type === 'NIM'
+                        ? Nimiq.Address.fromAny(setupSwapRequest.fund.sender)
+                        : setupSwapRequest.redeem.type === 'NIM'
+                            ? Nimiq.Address.fromAny(setupSwapRequest.redeem.recipient)
+                            : '';
+                    if (nimiqAddress && !setupSwapRequest.nimiqAddresses.some(
+                        ({ address }) => Nimiq.Address.fromAny(address).equals(nimiqAddress))) {
+                        throw new Error('The address details of the NIM address doing the swap must be provided');
+                    }
+                }
+
+                if (setupSwapRequest.redeem.type === 'NIM') {
+                    if (!setupSwapRequest.redeem.validityStartHeight
+                        || setupSwapRequest.redeem.validityStartHeight < 1) {
+                        throw new Error(
+                            `Invalid validity start height: ${setupSwapRequest.redeem.validityStartHeight}`,
+                        );
+                    }
+                }
+
+                if (setupSwapRequest.fund.type === 'NIM') {
+                    if (!setupSwapRequest.fund.validityStartHeight
+                        || setupSwapRequest.fund.validityStartHeight < 1) {
+                        throw new Error(`Invalid validity start height: ${setupSwapRequest.fund.validityStartHeight}`);
+                    }
+                }
+
                 const parsedSetupSwapRequest: ParsedSetupSwapRequest = {
                     kind: RequestType.SETUP_SWAP,
+                    walletId: setupSwapRequest.accountId,
                     ...setupSwapRequest,
 
                     fund: setupSwapRequest.fund.type === 'NIM' ? {
                         ...setupSwapRequest.fund,
                         type: SwapAsset[setupSwapRequest.fund.type],
                         sender: Nimiq.Address.fromAny(setupSwapRequest.fund.sender),
-                    } : {
+                    } : setupSwapRequest.fund.type === 'BTC' ? {
+                        ...setupSwapRequest.fund,
+                        type: SwapAsset[setupSwapRequest.fund.type],
+                    } : { // EUR
                         ...setupSwapRequest.fund,
                         type: SwapAsset[setupSwapRequest.fund.type],
                     },
@@ -485,12 +577,16 @@ export class RequestParser {
                         ...setupSwapRequest.redeem,
                         type: SwapAsset[setupSwapRequest.redeem.type],
                     },
+
+                    layout: setupSwapRequest.layout || 'standard',
                 };
+
                 return parsedSetupSwapRequest;
             case RequestType.REFUND_SWAP:
                 const refundSwapRequest = request as RefundSwapRequest;
 
-                // Validate and parse only what we use in the Hub
+                // Only basic parsing and validation. Refund transaction specific data will be validated by the Keyguard
+                // or subsequent Ledger transaction signing requests.
 
                 if (!['NIM', 'BTC'].includes(refundSwapRequest.refund.type)) {
                     throw new Error('Refunding object type must be "NIM" or "BTC"');
@@ -498,7 +594,7 @@ export class RequestParser {
 
                 const parsedRefundSwapRequest: ParsedRefundSwapRequest = {
                     kind: RequestType.REFUND_SWAP,
-                    ...refundSwapRequest,
+                    appName: refundSwapRequest.appName,
                     walletId: refundSwapRequest.accountId,
 
                     refund: refundSwapRequest.refund.type === 'NIM' ? {
@@ -527,7 +623,10 @@ export class RequestParser {
                 const signTransactionRequest = request as ParsedSignTransactionRequest;
                 return {
                     appName: signTransactionRequest.appName,
-                    sender: signTransactionRequest.sender.toUserFriendlyAddress(),
+                    sender: signTransactionRequest.sender instanceof Nimiq.Address
+                        ? signTransactionRequest.sender.toUserFriendlyAddress()
+                        // Note: additional sender information is lost and does not survive reloads, see RequestTypes.ts
+                        : signTransactionRequest.sender.address.toUserFriendlyAddress(),
                     recipient: signTransactionRequest.recipient.toUserFriendlyAddress(),
                     recipientType: signTransactionRequest.recipientType,
                     recipientLabel: signTransactionRequest.recipientLabel,
@@ -596,8 +695,12 @@ export class RequestParser {
                     appName: onboardRequest.appName,
                     disableBack: onboardRequest.disableBack,
                 } as OnboardRequest;
-            case RequestType.SIGNUP:
             case RequestType.CHOOSE_ADDRESS:
+                const chooseAddressRequest = request as ParsedChooseAddressRequest;
+                return {
+                    ...chooseAddressRequest,
+                } as ChooseAddressRequest;
+            case RequestType.SIGNUP:
             case RequestType.LOGIN:
             case RequestType.MIGRATE:
             case RequestType.ADD_VESTING_CONTRACT:
@@ -640,15 +743,17 @@ export class RequestParser {
                 return {
                     appName: signBtcTransactionRequest.appName,
                     accountId: signBtcTransactionRequest.walletId,
+                    // Note: input.keyPath is lost on re-parsing and does not survive reloads, see RequestTypes.ts
                     inputs: signBtcTransactionRequest.inputs,
                     output: signBtcTransactionRequest.output,
                     changeOutput: signBtcTransactionRequest.changeOutput,
+                    locktime: signBtcTransactionRequest.locktime,
                 } as SignBtcTransactionRequest;
             case RequestType.SETUP_SWAP:
                 const setupSwapRequest = request as ParsedSetupSwapRequest;
-
-                const swapSetupRequest: SetupSwapRequest = {
+                return {
                     ...setupSwapRequest,
+                    accountId: setupSwapRequest.walletId,
 
                     // @ts-ignore Type 'Address' is not assignable to type 'string'
                     fund: setupSwapRequest.fund.type === 'NIM' ? {
@@ -661,23 +766,20 @@ export class RequestParser {
                         ...setupSwapRequest.redeem,
                         recipient: setupSwapRequest.redeem.recipient.toUserFriendlyAddress(),
                     } : setupSwapRequest.redeem,
-                };
-                return swapSetupRequest;
+                } as SetupSwapRequest;
             case RequestType.REFUND_SWAP:
-                const parsedRefundSwapRequest = request as ParsedRefundSwapRequest;
-
-                const refundSwapRequest: RefundSwapRequest = {
-                    ...parsedRefundSwapRequest,
-                    accountId: parsedRefundSwapRequest.walletId,
+                const refundSwapRequest = request as ParsedRefundSwapRequest;
+                return {
+                    ...refundSwapRequest,
+                    accountId: refundSwapRequest.walletId,
 
                     // @ts-ignore Type 'Address' is not assignable to type 'string'
-                    refund: parsedRefundSwapRequest.refund.type === 'NIM' ? {
-                        ...parsedRefundSwapRequest.refund,
-                        sender: parsedRefundSwapRequest.refund.sender.toUserFriendlyAddress(),
-                        recipient: parsedRefundSwapRequest.refund.recipient.toUserFriendlyAddress(),
-                    } : parsedRefundSwapRequest.refund,
-                };
-                return refundSwapRequest;
+                    refund: refundSwapRequest.refund.type === 'NIM' ? {
+                        ...refundSwapRequest.refund,
+                        sender: refundSwapRequest.refund.sender.toUserFriendlyAddress(),
+                        recipient: refundSwapRequest.refund.recipient.toUserFriendlyAddress(),
+                    } : refundSwapRequest.refund,
+                } as RefundSwapRequest;
             default:
                 return null;
         }

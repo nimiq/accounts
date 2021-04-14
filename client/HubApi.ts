@@ -11,6 +11,8 @@ import {
     BasicRequest,
     SimpleRequest,
     OnboardRequest,
+    ChooseAddressRequest,
+    ChooseAddressResult,
     CheckoutRequest,
     SignTransactionRequest,
     RenameRequest,
@@ -144,9 +146,9 @@ export default class HubApi<DB extends BehaviorType = BehaviorType.POPUP> { // D
     }
 
     public chooseAddress<B extends BehaviorType = DB>(
-        request: Promise<BasicRequest> | BasicRequest,
+        request: Promise<ChooseAddressRequest> | ChooseAddressRequest,
         requestBehavior: RequestBehavior<B> = this._defaultBehavior as any,
-    ): Promise<B extends BehaviorType.REDIRECT ? void : Address> {
+    ): Promise<B extends BehaviorType.REDIRECT ? void : ChooseAddressResult> {
         return this._request(requestBehavior, RequestType.CHOOSE_ADDRESS, [request]);
     }
 
