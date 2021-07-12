@@ -426,10 +426,10 @@ export default class RpcApi {
 
         if (error.message === 'Request aborted') {
             /*
-             * In case the window is a popup and the recovered state is the one with which the popup was
-             * initialized (has a source), then reject it. The popup will be closed as a result.
+             * In case the window is a pop-up and the recovered state is the one with which the pop-up was
+             * initialized (has a source), then reject it. The pop-up will be closed as a result.
              * If not, there was another history entry in between, where a history.back() will navigate to,
-             * not closing the popup in the process.
+             * not closing the pop-up in the process.
              */
             if (this._staticStore.rpcState!.source && window.opener) {
                 this.reject(error);

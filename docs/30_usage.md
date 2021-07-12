@@ -31,15 +31,15 @@ document.getElementById('checkoutBtn').addEventListener('click', function(event)
 });
 ```
 
-By default, the client opens a popup window for user interactions. On mobile
+By default, the client opens a pop-up window for user interactions. On mobile
 devices, a new tab will be opened instead. For simplicity, we will always refer
-to popups throughout this documentation.
+to pop-ups throughout this documentation.
 
 Popups will be blocked by browsers if not opened within the context of a user
 action. Thus, it is required that API methods are called _synchronously_ within
 a user action, such as a click.
 
-For more details about avoiding popup blocking, please refer to
+For more details about avoiding pop-up blocking, please refer to
 [this article](https://javascript.info/popup-windows#popup-blocking).
 
 ## Using Redirects

@@ -99,7 +99,7 @@ const signedTransaction = await hubApi.signTransaction(options);
 | `recipient` | string | **yes** | The human-readable address of the recipient (your shop/app). |
 | `value` | number | **yes** | Value of the transaction, in Luna. |
 | `validityStartHeight` | number | **yes** | The transaction's validity start height. (A transaction is only valid for 120 blocks after its validityStartHeight. Transactions with a validityStartHeight higher than the next network block height are rejected and need to be sent again later during their validity window.) |
-| `fee` | number | no | Transaction fee in luna. Default: 0 |
+| `fee` | number | no | Transaction fee in Luna. Default: 0 |
 | `extraData` | string or Uint8Array | no | Extra data that should be sent with the transaction. |
 | `flags` | number | no | A [`Nimiq.Transaction.Flag`](https://nimiq-network.github.io/developer-reference/chapters/transactions.html#extended-transaction), only required if the transaction should create a contract. |
 | `recipientType` | number | no | The [`Nimiq.Account.Type`](https://nimiq-network.github.io/developer-reference/chapters/accounts-and-contracts.html#contracts) of the recipient. Only required if the transaction should create a contract. |

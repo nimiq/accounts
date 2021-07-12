@@ -16,7 +16,7 @@ permalink: /using-redirects
 
 ## Configuring Top-Level Redirects
 
-If you prefer top-level redirects instead of popups, you can pass an
+If you prefer top-level redirects instead of pop-ups, you can pass an
 instance of `RedirectRequestBehavior` as a second parameter to either the
 HubApi initialization or to any API method:
 
@@ -30,7 +30,7 @@ const hubApi = new HubApi(<url>, redirectBehavior);
 const result = hubApi.checkout(<requestOptions>, redirectBehavior);
 ```
 
-> **Note:** To use redirects instead of popups, your app must run under HTTPS!
+> **Note:** To use redirects instead of pop-ups, your app must run under HTTPS!
 
 > **Note:** The way to configure top-level redirects will likely change in an upcoming
 > version of the Hub API!
@@ -54,7 +54,7 @@ const redirectBehavior = new RedirectRequestBehavior(null, storedData);
 
 ## Listening for Redirect Responses
 
-If you configured the HubApi to use top-level redirects instead of popups, you need to
+If you configured the HubApi to use top-level redirects instead of pop-ups, you need to
 follow the four steps below to specifically listen for the redirects from the Hub back
 to your site, using the `on()` method.
 
